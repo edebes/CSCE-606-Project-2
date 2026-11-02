@@ -30,16 +30,16 @@ Given('the following users exist:') do |table|
     end
 end
 
-Given('I am in session {string}') do |string|
-    visit session_path(string)
+Given('I am in session {int}') do |Integer|
+    visit session_path(Integer)
 end
 
-When('I am on question {string}') do |string|
-    visit question_path(string)
+When('I am on question {int}') do |Integer|
+    visit question_path(Integer)
 end
 
-When('I am user {string}') do |string|
-    visit user_path(string)
+When('I am user {int}') do |Integer|
+    visit user_path(Integer)
 end
 
 When('I select choice {string}') do |string|
