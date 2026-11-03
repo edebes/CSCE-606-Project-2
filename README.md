@@ -1,14 +1,6 @@
 # CSCE-606-Project-2
 ## Team Members
-Alex Gonce
-
-Eric Debes
-
-Gokulan Valavan
-
-Jaelen Dixon
-
-Yashas Suresh
+Alex Gonce, Eric Debes, Gokulan Valavan, Jaelen Dixon, Yashas Suresh
 
 ## App Name
 Firbak
