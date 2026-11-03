@@ -1,1 +1,1 @@
-
+This file is a placeholder, we have not implemented enough logic for the project to be able to accurately document a user guide for it. As more of the project is completed, this will become more filled out.
