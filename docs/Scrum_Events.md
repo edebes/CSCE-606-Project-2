@@ -45,7 +45,7 @@ Notes:
 # Sprint 2: Nov 2-Nov 15
 ## Goal: Finish MVP and Deploy
 ## Sprint Meetings
-### Sprint Planning 10/23
+### Sprint Planning 11/2
 Attendees: Alex Gonce, Eric Debes, Yashas Suresh, Gokulan Valavan
 
 Notes: 
