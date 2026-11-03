@@ -41,3 +41,34 @@ Notes:
 - PR were mostly self-reviewed this time around, but in the future we should make sure others review
 - others should review PRs within 1-2 days
 - Sprint time frames should be flexible given the scope of the work
+
+# Sprint 2: Nov 2-Nov 15
+## Goal: Finish MVP and Deploy
+## Sprint Meetings
+### Sprint Planning 10/23
+Attendees: Alex Gonce, Eric Debes, Yashas Suresh, Gokulan Valavan
+
+Notes: 
+
+Everyone agreed to sprint goal
+
+1st scrum meeting goal: have logic largely implemented for each of these models and deploy
+
+- User: Eric (3 points)
+- Class: Gokulan (3 points)
+- QuestionSet: Alex (3 points)
+- Question & Choice:  (3 points)
+- Session:  (3 points)
+
+Points for user stories will be assigned to multiple people since they are mostly cross-model, if anyone needs to do a particularly significant amount of work to get a user story to complete, they will get most of the points the story is worth, but we plan to do much more paired programming this sprint to share the story points of the user stories.
+
+### Scrum Meeting 11/4
+Attendees: 
+
+Summary: 
+
+### Scrum Meeting 11/6
+Attendees: 
+
+Summary: 
+
