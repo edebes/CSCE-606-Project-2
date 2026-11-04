@@ -10,5 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 0) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_04_165954) do
+  create_table "choices", force: :cascade do |t|
+    t.text "body"
+    t.boolean "correct"
+    t.text "feedback"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 end
