@@ -13,6 +13,26 @@ RSpec.describe Choice, type: :model do
     end
   end
 
+  describe 'validations' do
+    it 'is valid with valid attributes' do
+      choice = described_class.new(body: '6', correct: true)
+
+      expect(choice).to be_valid
+    end
+
+    it 'is invalid without a body' do
+      choice = described_class.new(body: nil, correct: true)
+
+      expect(choice).not_to be_valid
+    end
+
+    it 'is invalid without a correctness' do
+      choice = described_class.new(body: '6', correct: nil)
+
+      expect(choice).not_to be_valid
+    end
+  end
+
   describe 'correct?' do
     it 'returns true for correct options' do
       option = described_class.find_by(body: '6')
