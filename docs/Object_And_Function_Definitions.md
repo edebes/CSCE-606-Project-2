@@ -60,7 +60,7 @@
 - question_sets (association to QuestionSet)
 
 *Functions:*
-- add_choice(choice): Adds an answer choice to the question.
+- add_choice(body:, correct:, feedback: nil): Adds an answer choice to the question.
 - remove_choice(choice): Removes an answer choice.
 - categorize_topic(topic): Assigns the question to a topic (stretch).
 - choices(): Returns all associated choices.
