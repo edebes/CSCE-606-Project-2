@@ -14,7 +14,7 @@ Attendees: Alex Gonce, Eric Debes, Gokulan Valavan
 Summary: Discussed updates, of which there were done
 
 ### Scrum Meeting 10/28
-Attendees:Eric Debes, Jaelen Dixon, Gokulan Valavan
+Attendees: Eric Debes, Jaelen Dixon, Gokulan Valavan
 
 Summary: Began divvying out tasks among attendees
 
@@ -63,12 +63,14 @@ Everyone agreed to sprint goal
 Points for user stories will be assigned to multiple people since they are mostly cross-model, if anyone needs to do a particularly significant amount of work to get a user story to complete, they will get most of the points the story is worth, but we plan to do much more paired programming this sprint to share the story points of the user stories.
 
 ### Scrum Meeting 11/4
-Attendees: 
+Attendees: Eric Debes, Alex Gonce, Jaelen Dixon
 
-Summary: 
+Summary: Everyone was busy, no work complete
 
 ### Scrum Meeting 11/6
-Attendees: 
+Attendees: Alex Gonce, Gokulan Valavan, Eric Debes, Jaelen Dixon, Yashas Suresh
 
 Summary: 
-
+- talked about backend/database
+- Eric, Alex, Jaelen completed models
+- Mini-Goal: Deploy application over weekend
