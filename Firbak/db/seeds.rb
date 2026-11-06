@@ -15,9 +15,21 @@ more_users = [
   { user_id: 13579, name: 'Alfonzo Rebeiro',
     email: 'alfonzo.rebeiro@tamu.edu', role: 'ta' }
 ]
+# t.string :title
+# t.integer :owner
+# t.integer :questions, array: true, default: []
+question_set_seeds = [
+  {:title => "Basic Math", :owner => 24680},
+  {:title => "Python Review", :owner => 13579},
+  {:title => "Algebra", :owner => 24680},
+]
 
 more_users.each do |user|
   User.create!(user)
+end
+
+question_set_seeds.each do |question_set|
+  QuestionSet.create!(question_set)
 end
 
 question_seeds = [
