@@ -27,7 +27,7 @@ question_seeds = [
 ]
 
 question_seeds.each do |question|
-  Quesiton.create!(question)
+  Question.create!(question)
 end
 
 question_1_choices = [
@@ -44,7 +44,7 @@ question_2_choices = [
   { body: "1.5", correct: false }
 ]
 
-question_1_choices = [
+question_3_choices = [
   { body: "6", correct: false },
   { body: "5", correct: false },
   { body: "12", correct: false },
