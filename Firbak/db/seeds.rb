@@ -31,11 +31,6 @@ more_users.each do |user|
   User.create!(user)
 end
 
-<<<<<<< HEAD
-question_sets.each do |question_set|
-  QuestionSet.create!(question_set)
-end
-=======
 question_seeds = [
   { body: "2 x 3 = ?", number: 1 },
   { body: "2 + 3 = ?", number: 2 },
@@ -81,4 +76,3 @@ question_3_choices.each do |choice|
   question = Question.find_by(body: "6 / 2 = ?")
   question.choices.create!(choice)
 end
->>>>>>> 2053e90af4392f3c560d45e9d1d87b457bc4665a

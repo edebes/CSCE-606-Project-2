@@ -10,13 +10,6 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema[8.1].define(version: 2026_11_04_220524) do
-  create_table "question_sets", force: :cascade do |t|
-    t.string "title"
-    t.integer "owner"
-    t.json "questions", default: []
-=======
 ActiveRecord::Schema[8.1].define(version: 2026_11_05_035806) do
   create_table "choices", force: :cascade do |t|
     t.text "body"
@@ -31,7 +24,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_05_035806) do
   create_table "questions", force: :cascade do |t|
     t.integer "number"
     t.text "body"
->>>>>>> 2053e90af4392f3c560d45e9d1d87b457bc4665a
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

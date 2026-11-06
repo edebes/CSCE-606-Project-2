@@ -2,6 +2,7 @@ class Question < ApplicationRecord
   validates :body, presence: true
   validates :number, presence: true
   
+  belongs_to :question_sets
   has_many :choices
 
   def add_choice(body:, correct:, feedback: nil)
