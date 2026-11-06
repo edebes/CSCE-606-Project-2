@@ -18,17 +18,18 @@ more_users = [
 # t.string :title
 # t.integer :owner
 # t.integer :questions, array: true, default: []
-question_sets = [
-  {:title => "Basic Math", :owner => 24680,
-    :question => [1, 2, 3, 4, 5]},
-  {:title => "Python Review", :owner => 13579,
-    :question => [6, 7, 8]},
-  {:title => "Algebra", :owner => 24680,
-    :question => [9, 10]},
+question_set_seeds = [
+  {:title => "Basic Math", :owner => 24680},
+  {:title => "Python Review", :owner => 13579},
+  {:title => "Algebra", :owner => 24680},
 ]
 
 more_users.each do |user|
   User.create!(user)
+end
+
+question_set_seeds.each do |question_set|
+  QuestionSet.create!(question_set)
 end
 
 question_seeds = [
