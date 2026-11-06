@@ -10,7 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_04_163737) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_160001) do
+  create_table "session_participants", id: false, force: :cascade do |t|
+    t.integer "session_id", null: false
+    t.integer "user_id", null: false
+    t.index ["session_id", "user_id"], name: "index_session_participants_on_session_id_and_user_id", unique: true
+    t.index ["user_id"], name: "index_session_participants_on_user_id"
+  end
+
+  create_table "sessions", force: :cascade do |t|
+    t.integer "question_set_id", null: false
+    t.integer "host_id", null: false
+    t.string "code", null: false
+    t.string "status", default: "active", null: false
+    t.json "summary", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_sessions_on_code", unique: true
+    t.index ["host_id"], name: "index_sessions_on_host_id"
+    t.index ["question_set_id"], name: "index_sessions_on_question_set_id"
+    t.index ["status"], name: "index_sessions_on_status"
+  end
+
   create_table "users", force: :cascade do |t|
     t.integer "user_id"
     t.string "name"
