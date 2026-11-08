@@ -31,6 +31,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_160001) do
     t.index ["question_set_id"], name: "index_sessions_on_question_set_id"
     t.index ["status"], name: "index_sessions_on_status"
   end
+ 
+  create_table "choices", force: :cascade do |t|
+    t.text "body"
+    t.boolean "correct"
+    t.text "feedback"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "question_id", null: false
+    t.index ["question_id"], name: "index_choices_on_question_id"
+  end
+
+  create_table "questions", force: :cascade do |t|
+    t.integer "number"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.integer "user_id"
@@ -40,4 +57,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_160001) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "choices", "questions"
 end
