@@ -13,6 +13,8 @@
       <strong>Firbak</strong>
       <% if logged_in? %>
         <span><%= current_user.name %> (<%= current_user.role %>)</span>
+        <%= link_to "Join session", join_session_path %>
+        <%= link_to "Question sets", question_sets_path %>
         <%= button_to "Log out", logout_path, method: :post %>
       <% else %>
         <%= link_to "Log in", login_path %>

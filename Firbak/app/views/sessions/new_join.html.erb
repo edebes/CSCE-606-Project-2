@@ -1,0 +1,9 @@
+<h1>Join a session</h1>
+
+<%= form_with url: join_session_path, method: :post, local: true do %>
+  <div>
+    <%= label_tag :session_code, "Session code" %>
+    <%= text_field_tag :session_code, params[:session_code] %>
+  </div>
+  <%= submit_tag "Join" %>
+<% end %>
