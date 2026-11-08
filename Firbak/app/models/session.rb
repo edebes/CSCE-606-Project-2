@@ -2,6 +2,7 @@ class Session < ApplicationRecord
   STATUSES = %w[active ended].freeze
 
   belongs_to :host, class_name: "User", foreign_key: :host_id
+  belongs_to :question_set
   has_and_belongs_to_many :participants,
                           class_name: "User",
                           join_table: "session_participants",
