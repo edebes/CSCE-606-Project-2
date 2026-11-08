@@ -1,8 +1,15 @@
 
 
 Given('the following session exists:') do |table|
-    table.hashes.each do |session|
-        Session.create(session)
+    table.hashes.each do |attrs|
+        Session.create!(
+          id: attrs['id'],
+          question_set_id: attrs['question_set_id'],
+          host_id: attrs['host_id'],
+          code: attrs['code'],
+          status: attrs['status'].presence || 'active',
+          summary: {}
+        )
     end
 end
 
