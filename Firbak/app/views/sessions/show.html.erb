@@ -1,0 +1,13 @@
+<h1>Live session</h1>
+
+<p>
+  Question set: <strong><%= @session.question_set.title %></strong>
+</p>
+
+<p>
+  Join code: <strong><%= @session.code %></strong>
+</p>
+
+<p>Status: <%= @session.status %></p>
+
+<%= link_to "Back to question sets", question_sets_path %>
