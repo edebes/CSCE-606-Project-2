@@ -15,6 +15,14 @@ more_users = [
   { user_id: 13579, name: 'Alfonzo Rebeiro',
     email: 'alfonzo.rebeiro@tamu.edu', role: 'ta' }
 ]
+# t.string :title
+# t.integer :owner
+# t.integer :questions, array: true, default: []
+question_set_seeds = [
+  {:title => "Basic Math", :owner_id => 24680},
+  {:title => "Python Review", :owner_id => 13579},
+  {:title => "Algebra", :owner_id => 24680},
+]
 
 more_users.each do |user|
   User.find_or_create_by!(email: user[:email]) do |record|
@@ -22,6 +30,13 @@ more_users.each do |user|
     record.name = user[:name]
     record.role = user[:role]
   end
+end
+
+question_set_seeds.each do |question_set|
+  QuestionSet.find_or_create_by!(
+    title: question_set[:title],
+    owner_id: question_set[:owner_id]
+  )
 end
 
 instructor = User.find_by!(email: "anne.smith@tamu.edu")
@@ -42,8 +57,12 @@ question_seeds = [
   { body: "6 / 2 = ?", number: 3 }
 ]
 
-question_seeds.each do |question|
-  Question.create!(question)
+basic_math = QuestionSet.find_by!(title: "Basic Math")
+
+question_seeds.each do |attributes|
+  basic_math.questions.find_or_create_by!(number: attributes[:number]) do |question|
+    question.body = attributes[:body]
+  end
 end
 
 question_1_choices = [
