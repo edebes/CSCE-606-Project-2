@@ -74,3 +74,10 @@ Summary:
 - talked about backend/database
 - Eric, Alex, Jaelen completed models
 - Mini-Goal: Deploy application over weekend
+
+### Scrum Meeting 11/9
+Attendees: Alex Gonce, Gokulan Valavan, Eric Debes, Jaelen Dixon
+
+Summary: 
+- reviewing PRs going well
+- current rate feels like good progress
