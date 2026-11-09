@@ -1,3 +1,5 @@
 class QuestionSet < ActiveRecord::Base
-  has_many :question
+  validates :title, presence: true
+  validates :owner_id, presence: true
+  has_many :questions
 end

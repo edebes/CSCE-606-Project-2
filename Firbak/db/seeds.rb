@@ -19,9 +19,9 @@ more_users = [
 # t.integer :owner
 # t.integer :questions, array: true, default: []
 question_set_seeds = [
-  {:title => "Basic Math", :owner => 24680},
-  {:title => "Python Review", :owner => 13579},
-  {:title => "Algebra", :owner => 24680},
+  {:title => "Basic Math", :owner_id => 24680},
+  {:title => "Python Review", :owner_id => 13579},
+  {:title => "Algebra", :owner_id => 24680},
 ]
 
 more_users.each do |user|
