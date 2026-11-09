@@ -33,7 +33,10 @@ more_users.each do |user|
 end
 
 question_set_seeds.each do |question_set|
-  QuestionSet.create!(question_set)
+  QuestionSet.find_or_create_by!(
+    title: question_set[:title],
+    owner_id: question_set[:owner_id]
+  )
 end
 
 instructor = User.find_by!(email: "anne.smith@tamu.edu")
@@ -54,8 +57,12 @@ question_seeds = [
   { body: "6 / 2 = ?", number: 3 }
 ]
 
-question_seeds.each do |question|
-  Question.create!(question)
+basic_math = QuestionSet.find_by!(title: "Basic Math")
+
+question_seeds.each do |attributes|
+  basic_math.questions.find_or_create_by!(number: attributes[:number]) do |question|
+    question.body = attributes[:body]
+  end
 end
 
 question_1_choices = [
