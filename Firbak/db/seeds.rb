@@ -25,12 +25,28 @@ question_set_seeds = [
 ]
 
 more_users.each do |user|
-  User.create!(user)
+  User.find_or_create_by!(email: user[:email]) do |record|
+    record.user_id = user[:user_id]
+    record.name = user[:name]
+    record.role = user[:role]
+  end
 end
 
 question_set_seeds.each do |question_set|
   QuestionSet.create!(question_set)
 end
+
+instructor = User.find_by!(email: "anne.smith@tamu.edu")
+student = User.find_by!(email: "john.doe@tamu.edu")
+
+demo_session = Session.find_or_create_by!(code: "1234") do |session|
+  session.question_set_id = 1
+  session.host = instructor
+  session.status = "active"
+  session.summary = {}
+end
+
+demo_session.participants << student unless demo_session.participants.include?(student)
 
 question_seeds = [
   { body: "2 x 3 = ?", number: 1 },

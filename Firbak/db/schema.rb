@@ -10,7 +10,45 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_05_035806) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_164957) do
+  create_table "course_memberships", force: :cascade do |t|
+    t.integer "course_id", null: false
+    t.integer "user_id", null: false
+    t.string "role", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id", "user_id"], name: "index_course_memberships_on_course_id_and_user_id", unique: true
+    t.index ["course_id"], name: "index_course_memberships_on_course_id"
+    t.index ["user_id"], name: "index_course_memberships_on_user_id"
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+  
+  create_table "session_participants", id: false, force: :cascade do |t|
+    t.integer "session_id", null: false
+    t.integer "user_id", null: false
+    t.index ["session_id", "user_id"], name: "index_session_participants_on_session_id_and_user_id", unique: true
+    t.index ["user_id"], name: "index_session_participants_on_user_id"
+  end
+
+  create_table "sessions", force: :cascade do |t|
+    t.integer "question_set_id", null: false
+    t.integer "host_id", null: false
+    t.string "code", null: false
+    t.string "status", default: "active", null: false
+    t.json "summary", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_sessions_on_code", unique: true
+    t.index ["host_id"], name: "index_sessions_on_host_id"
+    t.index ["question_set_id"], name: "index_sessions_on_question_set_id"
+    t.index ["status"], name: "index_sessions_on_status"
+  end
+ 
   create_table "choices", force: :cascade do |t|
     t.text "body"
     t.boolean "correct"
@@ -37,5 +75,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_05_035806) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "course_memberships", "courses"
+  add_foreign_key "course_memberships", "users"
   add_foreign_key "choices", "questions"
 end
