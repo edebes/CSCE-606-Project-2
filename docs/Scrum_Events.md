@@ -81,3 +81,12 @@ Attendees: Alex Gonce, Gokulan Valavan, Eric Debes, Jaelen Dixon
 Summary: 
 - reviewing PRs going well
 - current rate feels like good progress
+
+### Scrum Meeting 11/9
+Attendees: Alex Gonce, Gokulan Valavan, Eric Debes, Jaelen Dixon
+
+Summary: 
+- DEPLOYED!
+- readjusting story points/user stories since Yashas completed more than assigned
+- needing to catch up main (open pull requests)
+
