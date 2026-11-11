@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Choice, type: :model do
   before(:all) do
     question = Question.find_by(body: '2 x 3 = ?', number: 1)
-    question ||= Quesiton.create(body: '2 x 3 = ?', number: 1)
+    question ||= Question.create(body: '2 x 3 = ?', number: 1)
 
     if described_class.where(body: '6').empty?
       described_class.create(body: '6', correct: true, question: question)

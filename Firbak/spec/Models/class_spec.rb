@@ -4,9 +4,9 @@ require "rails_helper"
 
 RSpec.describe Course, type: :model do
   let(:course)     { Course.create!(name: "CSCE 606") }
-  let(:instructor) { User.create!(name: "Anne",  email: "anne@tamu.edu",  role: "instructor") }
-  let(:ta)         { User.create!(name: "Tara",  email: "tara@tamu.edu",  role: "ta") }
-  let(:student)    { User.create!(name: "John",  email: "john@tamu.edu",  role: "student") }
+  let(:instructor) { User.create!(user_id: 1001, name: "Anne",  email: "anne@tamu.edu",  role: "instructor") }
+  let(:ta)         { User.create!(user_id: 1002, name: "Tara",  email: "tara@tamu.edu",  role: "ta") }
+  let(:student)    { User.create!(user_id: 1003, name: "John",  email: "john@tamu.edu",  role: "student") }
 
   it "requires a name" do
     expect(Course.new(name: "")).not_to be_valid
