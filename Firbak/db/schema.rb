@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_205940) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_08_153002) do
   create_table "choices", force: :cascade do |t|
     t.text "body"
     t.boolean "correct"
@@ -82,6 +82,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_205940) do
     t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "password_digest"
   end
 
   add_foreign_key "choices", "questions"

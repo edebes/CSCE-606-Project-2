@@ -1,4 +1,8 @@
 class User < ActiveRecord::Base
+  # validations: false keeps existing User specs working; login still uses authenticate
+  # when password_digest is present.
+  has_secure_password validations: false
+
   has_many :sessions, foreign_key: "host_id", dependent: :destroy
   has_many :question_sets, foreign_key: "author_id", dependent: :destroy
   has_many :course_memberships, dependent: :destroy

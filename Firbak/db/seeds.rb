@@ -18,19 +18,27 @@ more_users = [
 # t.string :title
 # t.integer :owner
 # t.integer :questions, array: true, default: []
-question_set_seeds = [
-  {:title => "Basic Math", :owner_id => 24680},
-  {:title => "Python Review", :owner_id => 13579},
-  {:title => "Algebra", :owner_id => 24680},
-]
-
 more_users.each do |user|
-  User.find_or_create_by!(email: user[:email]) do |record|
-    record.user_id = user[:user_id]
-    record.name = user[:name]
-    record.role = user[:role]
+  record = User.find_or_initialize_by(email: user[:email])
+  record.user_id = user[:user_id]
+  record.name = user[:name]
+  record.role = user[:role]
+  if record.password_digest.blank?
+    record.password = "password123"
+    record.password_confirmation = "password123"
   end
+  record.save!
 end
+
+instructor = User.find_by!(email: "anne.smith@tamu.edu")
+student = User.find_by!(email: "john.doe@tamu.edu")
+ta = User.find_by!(email: "alfonzo.rebeiro@tamu.edu")
+
+question_set_seeds = [
+  { title: "Basic Math", owner_id: instructor.id },
+  { title: "Python Review", owner_id: ta.id },
+  { title: "Algebra", owner_id: instructor.id }
+]
 
 question_set_seeds.each do |question_set|
   QuestionSet.find_or_create_by!(
@@ -39,11 +47,10 @@ question_set_seeds.each do |question_set|
   )
 end
 
-instructor = User.find_by!(email: "anne.smith@tamu.edu")
-student = User.find_by!(email: "john.doe@tamu.edu")
+basic_math = QuestionSet.find_by!(title: "Basic Math")
 
 demo_session = Session.find_or_create_by!(code: "1234") do |session|
-  session.question_set_id = 1
+  session.question_set = basic_math
   session.host = instructor
   session.status = "active"
   session.summary = {}
@@ -56,8 +63,6 @@ question_seeds = [
   { body: "2 + 3 = ?", number: 2 },
   { body: "6 / 2 = ?", number: 3 }
 ]
-
-basic_math = QuestionSet.find_by!(title: "Basic Math")
 
 question_seeds.each do |attributes|
   basic_math.questions.find_or_create_by!(number: attributes[:number]) do |question|

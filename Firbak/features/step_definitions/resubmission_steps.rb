@@ -61,6 +61,4 @@ Then "I shuold not see a {string} button" do |label|
   expect(page).to have_no_button(label)
 end
 
-Then "I should see {string}" do |text|
-  expect(page).to have_content(text)
-end
+# "I should see {string}" is defined in feedbacks_steps.rb — do not redefine.

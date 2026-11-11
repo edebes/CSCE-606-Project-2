@@ -3,25 +3,40 @@
 require "rails_helper"
 
 RSpec.describe Session, type: :model do
+  def create_user!(attrs)
+    password = "password123"
+    User.create!(
+      attrs.merge(
+        password: password,
+        password_confirmation: password
+      )
+    )
+  end
+
   let!(:host) do
     User.find_by(email: "anne.session@tamu.edu") ||
-      User.create!(user_id: 9001, name: "Anne Host", email: "anne.session@tamu.edu", role: "instructor")
+      create_user!(user_id: 9001, name: "Anne Host", email: "anne.session@tamu.edu", role: "instructor")
   end
 
   let!(:student) do
     User.find_by(email: "alice.session@tamu.edu") ||
-      User.create!(user_id: 9002, name: "Alice Student", email: "alice.session@tamu.edu", role: "student")
+      create_user!(user_id: 9002, name: "Alice Student", email: "alice.session@tamu.edu", role: "student")
   end
 
   let!(:ta) do
     User.find_by(email: "theo.session@tamu.edu") ||
-      User.create!(user_id: 9003, name: "Theo TA", email: "theo.session@tamu.edu", role: "ta")
+      create_user!(user_id: 9003, name: "Theo TA", email: "theo.session@tamu.edu", role: "ta")
+  end
+
+  let!(:question_set) do
+    QuestionSet.find_by(title: "Session Spec Set") ||
+      QuestionSet.create!(title: "Session Spec Set", owner_id: host.id)
   end
 
   describe "validations" do
     it "is valid with required attributes" do
       session = described_class.new(
-        question_set_id: 1,
+        question_set: question_set,
         host: host,
         code: "4242",
         status: "active"
@@ -30,30 +45,30 @@ RSpec.describe Session, type: :model do
       expect(session).to be_valid
     end
 
-    it "is invalid without a question_set_id" do
+    it "is invalid without a question_set" do
       session = described_class.new(host: host, code: "1111", status: "active")
 
       expect(session).not_to be_valid
-      expect(session.errors[:question_set_id]).to be_present
+      expect(session.errors[:question_set]).to be_present
     end
 
     it "is invalid without a host" do
-      session = described_class.new(question_set_id: 1, code: "1112", status: "active")
+      session = described_class.new(question_set: question_set, code: "1112", status: "active")
 
       expect(session).not_to be_valid
       expect(session.errors[:host]).to be_present
     end
 
     it "is invalid without a code" do
-      session = described_class.new(question_set_id: 1, host: host, status: "active", code: nil)
+      session = described_class.new(question_set: question_set, host: host, status: "active", code: nil)
 
       expect(session).not_to be_valid
       expect(session.errors[:code]).to be_present
     end
 
     it "requires a unique code" do
-      described_class.create!(question_set_id: 1, host: host, code: "5555", status: "active")
-      duplicate = described_class.new(question_set_id: 2, host: host, code: "5555", status: "active")
+      described_class.create!(question_set: question_set, host: host, code: "5555", status: "active")
+      duplicate = described_class.new(question_set: question_set, host: host, code: "5555", status: "active")
 
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:code]).to be_present
@@ -61,7 +76,7 @@ RSpec.describe Session, type: :model do
 
     it "only allows active or ended status" do
       session = described_class.new(
-        question_set_id: 1,
+        question_set: question_set,
         host: host,
         code: "6666",
         status: "paused"
@@ -74,18 +89,18 @@ RSpec.describe Session, type: :model do
 
   describe ".start" do
     it "creates an active session with a generated join code" do
-      session = described_class.start(question_set_id: 10, host: host)
+      session = described_class.start(question_set_id: question_set.id, host: host)
 
       expect(session).to be_persisted
       expect(session.status).to eq("active")
       expect(session.host).to eq(host)
-      expect(session.question_set_id).to eq(10)
+      expect(session.question_set_id).to eq(question_set.id)
       expect(session.code).to match(/\A\d{4}\z/)
     end
 
     it "generates different codes for successive sessions" do
-      first = described_class.start(question_set_id: 11, host: host)
-      second = described_class.start(question_set_id: 11, host: host)
+      first = described_class.start(question_set_id: question_set.id, host: host)
+      second = described_class.start(question_set_id: question_set.id, host: host)
 
       expect(first.code).not_to eq(second.code)
     end
@@ -94,7 +109,7 @@ RSpec.describe Session, type: :model do
   describe "#join" do
     let!(:session) do
       described_class.create!(
-        question_set_id: 20,
+        question_set: question_set,
         host: host,
         code: "1234",
         status: "active"
@@ -139,7 +154,7 @@ RSpec.describe Session, type: :model do
   describe "#end" do
     let!(:session) do
       described_class.create!(
-        question_set_id: 30,
+        question_set: question_set,
         host: host,
         code: "7777",
         status: "active"
@@ -164,7 +179,7 @@ RSpec.describe Session, type: :model do
   describe "#send_live_feedback" do
     let!(:session) do
       described_class.create!(
-        question_set_id: 40,
+        question_set: question_set,
         host: host,
         code: "8888",
         status: "active"
@@ -198,7 +213,7 @@ RSpec.describe Session, type: :model do
   describe "#allow_resubmission" do
     let!(:session) do
       described_class.create!(
-        question_set_id: 50,
+        question_set: question_set,
         host: host,
         code: "9991",
         status: "active"
