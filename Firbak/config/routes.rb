@@ -13,5 +13,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get  "/sessions/join", to: "sessions#new_join", as: :join_session
+  post "/sessions/join", to: "sessions#join"
+
   resources :sessions, only: [:show]
 end
