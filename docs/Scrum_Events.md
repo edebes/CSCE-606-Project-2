@@ -82,7 +82,7 @@ Summary:
 - reviewing PRs going well
 - current rate feels like good progress
 
-### Scrum Meeting 11/9
+### Scrum Meeting 11/11
 Attendees: Alex Gonce, Gokulan Valavan, Eric Debes, Jaelen Dixon
 
 Summary: 
@@ -90,3 +90,17 @@ Summary:
 - readjusting story points/user stories since Yashas completed more than assigned
 - needing to catch up main (open pull requests)
 
+### Scrum Meeting 11/13
+Attendees: Alex Gonce, Eric Debes, Jaelen Dixon
+
+Summary: 
+- Jaelen and Alex busy, Eric made outline for his tasks
+- going back questions is stretch goal
+- add questions tracker to Session model
+- check if not Gokulan can push to Heroku/can we make github action to automate it
+- Discussion: how to not have javascript, 
+  - solo session for student? - stretch goal
+  - students can just all go at their own pace
+  - Decision: need to refresh page for live feedback if no javascript
+- QuestionSet belongs to one user, belongs to many classes - Alex
+- update README for running project - Gokulan
