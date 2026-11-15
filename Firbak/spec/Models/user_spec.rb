@@ -41,7 +41,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe role? do
+  describe 'role?' do
     it 'returns the role of the user' do
       user = described_class.find_by(user_id: 12345)
       expect(user.role?).to eq('student')
@@ -53,7 +53,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe can_manage_sets? do
+  describe 'can_manage_sets?' do
     it 'returns true for an instructor' do
       user = described_class.find_by(user_id: 24680)
       expect(user.can_manage_sets?).to be true
@@ -75,7 +75,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe can_give_live_feedback? do
+  describe 'can_give_live_feedback?' do
     it 'returns true for an instructor' do
       user = described_class.find_by(user_id: 24680)
       expect(user.can_give_live_feedback?).to be true

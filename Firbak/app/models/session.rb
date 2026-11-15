@@ -7,6 +7,7 @@ class Session < ApplicationRecord
                           class_name: "User",
                           join_table: "session_participants",
                           association_foreign_key: "user_id"
+  has_many :responses, dependent: :destroy
 
   validates :question_set_id, presence: true
   validates :host_id, presence: true
@@ -78,6 +79,42 @@ class Session < ApplicationRecord
 
   def session_summary
     summary.presence || { "answered" => 0, "most_missed" => [] }
+  end
+
+  def ordered_questions
+    question_set.questions.order(:id)
+  end
+
+  def current_question_for(student)
+    ordered_questions.find do |question|
+      !responses.exists?(user_id: student.id, question_id: question.id)
+    end
+  end
+
+  def submit_response(student, question, choice)
+    return :ended if ended?
+    return :not_participant unless participants.include?(student)
+    return :invalid_question unless question_set.questions.include?(question)
+    return :invalid_choice unless question.choices.include?(choice)
+
+    response = Response.create!(
+      session_id: self,
+      user_id: student,
+      question_id: question,
+      choice_id: choice,
+      correct: choice.correct
+    )
+    response
+  end
+
+  def progress_for(student)
+    total_questions = question_set.questions.count
+    answered_questions = responses.where(user_id: student.id).count
+    {
+      total_questions: total_questions,
+      answered_questions: answered_questions,
+      progress_percentage: total_questions.zero? ? 0 : (answered_questions.to_f / total_questions * 100).round(2)
+    }
   end
 
   private
