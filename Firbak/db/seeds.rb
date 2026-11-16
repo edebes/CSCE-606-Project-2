@@ -35,15 +35,15 @@ student = User.find_by!(email: "john.doe@tamu.edu")
 ta = User.find_by!(email: "alfonzo.rebeiro@tamu.edu")
 
 question_set_seeds = [
-  { title: "Basic Math", owner_id: instructor.id },
-  { title: "Python Review", owner_id: ta.id },
-  { title: "Algebra", owner_id: instructor.id }
+  { title: "Basic Math", owner: instructor },
+  { title: "Python Review", owner: ta },
+  { title: "Algebra", owner: instructor }
 ]
 
 question_set_seeds.each do |question_set|
   QuestionSet.find_or_create_by!(
     title: question_set[:title],
-    owner_id: question_set[:owner_id]
+    owner: question_set[:owner]
   )
 end
 

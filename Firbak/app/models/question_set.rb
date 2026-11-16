@@ -1,10 +1,10 @@
 class QuestionSet < ActiveRecord::Base
   validates :title, presence: true
-  validates :owner_id, presence: true
+  validates :owner, presence: true
 
-  has_many :question
-  has_and_belongs_to_many :class
-  belongs_to :user
+  has_many :questions
+  has_and_belongs_to_many :courses
+  belongs_to :owner, class_name: 'User'
 
   def add_question(question)
     questions.create(question)

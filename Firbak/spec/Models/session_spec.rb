@@ -30,7 +30,7 @@ RSpec.describe Session, type: :model do
 
   let!(:question_set) do
     QuestionSet.find_by(title: "Session Spec Set") ||
-      QuestionSet.create!(title: "Session Spec Set", owner_id: host.id)
+      QuestionSet.create!(title: "Session Spec Set", owner: host)
   end
 
   describe "validations" do

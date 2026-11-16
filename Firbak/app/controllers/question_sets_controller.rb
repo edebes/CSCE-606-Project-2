@@ -4,14 +4,14 @@ class QuestionSetsController < ApplicationController
 
   def index
     @question_sets = if current_user.can_manage_sets?
-                       QuestionSet.where(owner_id: current_user.id).order(:title)
+                       QuestionSet.where(owner: current_user).order(:title)
                      else
                        QuestionSet.none
                      end
   end
 
   def launch_session
-    unless current_user.can_manage_sets? && @question_set.owner_id == current_user.id
+    unless current_user.can_manage_sets? && @question_set.owner == current_user
       flash[:alert] = "You are not authorized to do that"
       redirect_to question_sets_path and return
     end
