@@ -82,12 +82,12 @@ class Session < ApplicationRecord
   end
 
   def ordered_questions
-    question_set.questions.order(:id)
+    question_set.questions.order(:number)
   end
 
   def current_question_for(student)
     ordered_questions.find do |question|
-      !responses.exists?(user_id: student.id, question_id: question.id)
+      !responses.exists?(user_id: student.id, question_id: question.id, choice_id: question.choices.where(correct: true).pluck(:id))
     end
   end
 

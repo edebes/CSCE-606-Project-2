@@ -24,4 +24,15 @@ class User < ActiveRecord::Base
   def can_give_live_feedback?()
     self.role == "instructor" || self.role == "ta"
   end
+
+  def struggling?(session)
+    return false unless session.ended?
+
+    current_question = session.current_question_for(self)
+    return false if current_question.nil?
+    responses = session.responses.where(user_id: self.id, question_id: current_question.id)
+    return false if responses.empty?
+
+    return responses.last.correct == false
+  end
 end
