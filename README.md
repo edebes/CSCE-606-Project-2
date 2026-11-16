@@ -2,7 +2,7 @@
 
 **Instant, targeted feedback for in-class problem solving.**
 
-👉 **Try it:** https://YOUR-HEROKU-APP.herokuapp.com
+**Try it:** [Firbak Login](https://firbak-csce606-619e9a474ba3.herokuapp.com/login)
 
 Firbak is a web service that allows instructors to create practice tests/questions for students to answer. It also lets instructors enter feedback/corrections for incorrect answers so that if those answers are inputted, students can learn what went wrong and how to improve. This allows instructors to incorporate active learning to make sure their students are practicing the content, and the immediate feedback allows students to ensure they know what they need to learn and understand what they missed for the future.
 
