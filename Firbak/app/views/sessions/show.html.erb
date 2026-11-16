@@ -55,14 +55,16 @@
   <% elsif @current_question.nil? %>
     <p>You have completed all questions in this session.</p>
   <% else %>
-    <p>Question <%= current_question.number %> of <%= @session.ordered_questions.count %></p>
+    <p>Question <%= @current_question.number %> of <%= @session.ordered_questions.count %></p>
     <p><strong><%= @current_question.body %></strong></p>
     <%= form_with url: session_responses_path(@session), method: :post do |form| %>
       <% @current_question.choices.each do |choice| %>
-        <label><%= radio_button_tag :choice_id, choice.id %> <%= choice.body %></label>
+        <label><%= radio_button_tag :choice_id, choice.id, false, required: true %> <%= choice.body %></label>
       <% end %>
       <%= form.submit "Submit" %>
     <% end %>
+  <% end %>
+  <% unless @session.ended? %>
     <p>
       <%= button_to "Leave session", leave_session_path(@session), method: :post, class: "btn btn-danger" %>
     </p>
