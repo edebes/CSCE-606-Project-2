@@ -104,15 +104,15 @@
 
 **Feedback**  
 *Attributes:*
-- id
-- to_user_id
+- to_user
+- from_user
 - session_id
-- question_id
+- question
 - content (text)
 - delivered (boolean/timestamp)
 
 *Functions:*
-- deliver_to(student): Sends feedback to targeted student.
+- deliver: Sends feedback to targeted student.
 
 ---
 
