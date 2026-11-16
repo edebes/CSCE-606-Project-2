@@ -3,20 +3,14 @@ class SessionsController < ApplicationController
 
   def show
     @session = Session.find(params[:id])
-    redirect_to root_path, alert: "Session not found" and return unless @session
-    case current_user.role?
-    when 'instructor'
-      unless @session.host_id == current_user.id
-        redirect_to root_path, alert: "You are not authorized to view this session."
-      end
-    when 'ta', 'student'
-      unless @session.participants.include?(current_user)
-        redirect_to root_path, alert: "You are not authorized to view this session."
-      end
-      current_question = @session.current_question_for(current_user)
-      redirect_to session_path(@session, current_question)
+    redirect_to join_session_path, alert: "Session not found" and return unless @session
+    if @session.host_id == current_user.id
+      @host_view = true
+    elsif @session.participants.include?(current_user)
+      @current_question = @session.current_question_for(current_user) unless @session.ended?
     else
-      redirect_to root_path, alert: "You are not authorized to view this session."
+      redirect_to join_session_path, alert: "You are not a participant in this session."
+      return
     end
   end
 
@@ -51,25 +45,25 @@ class SessionsController < ApplicationController
   def end_session
     @session = Session.find(params[:id])
     if @session.host_id != current_user.id
-      redirect_to root_path, alert: "You are not authorized to end this session."
+      redirect_to root_path, alert: "You are not authorized to do that."
       return
     end
 
     if @session.ended?
-      redirect_to session_dashboard_path(@session), notice: "Session has already ended."
+      redirect_to session_path(@session), notice: "Session has already ended."
       return
     end
     @session.end
-    redirect_to session_dashboard_path(@session), notice: "Session ended"
+    redirect_to session_path(@session), notice: "Session ended"
   end
 
   def leave
     @session = Session.find(params[:id])
-    if @session.participants.include?(current_user)
-      @session.participants.delete(current_user)
-      redirect_to root_path, notice: "You have left the session."
+    if @session.host_id == current_user.id
+      @session.end
+      redirect_to question_sets_path, notice: "Session ended."
     else
-      redirect_to root_path, alert: "You are not a participant in this session."
+      redirect_to join_session_path, notice: "You have left the session."
     end
   end
 

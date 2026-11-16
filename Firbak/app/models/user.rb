@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
   end
 
   def struggling?(session)
-    return false unless session.ended?
+    return false if session.ended?
 
     current_question = session.current_question_for(self)
     return false if current_question.nil?

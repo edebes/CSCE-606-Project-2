@@ -86,9 +86,8 @@ class Session < ApplicationRecord
   end
 
   def current_question_for(student)
-    ordered_questions.find do |question|
-      !responses.exists?(user_id: student.id, question_id: question.id, choice_id: question.choices.where(correct: true).pluck(:id))
-    end
+    done = responses.where(user_id: student.id, correct: true).select(:question_id)
+    ordered_questions.where.not(id: done).first
   end
 
   def submit_response(student, question, choice)
@@ -109,7 +108,7 @@ class Session < ApplicationRecord
 
   def progress_for(student)
     total_questions = question_set.questions.count
-    answered_questions = responses.where(user_id: student.id).count
+    answered_questions = responses.where(user_id: student.id, correct: true).distinct.count(:question_id)
     {
       total_questions: total_questions,
       answered_questions: answered_questions,

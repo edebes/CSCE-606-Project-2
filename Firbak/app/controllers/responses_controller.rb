@@ -3,6 +3,10 @@ class ResponsesController < ApplicationController
    before_action :set_session
 
    def create
+     if @session.ended?
+       redirect_to session_path(@session), alert: "Session has ended."
+       return
+     end
      @question = @session.current_question_for(current_user)
 
      unless @question
@@ -18,7 +22,7 @@ class ResponsesController < ApplicationController
        message += " Feedback: #{@choice.feedback}" if @choice&.feedback.present?
        redirect_to session_path(@session), notice: message
      when :ended
-       redirect_to session_path(@session), alert: "This session has ended."
+       redirect_to session_path(@session), alert: "Session has ended."
      when :not_participant
        redirect_to session_path(@session), alert: "You are not a participant in this session."
      when :invalid_question, :invalid_choice

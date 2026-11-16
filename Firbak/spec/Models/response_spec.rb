@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Response, type: :model do
-  before(:all) do
+  before(:each) do
     user = User.find_by(user_id: 12345)
     user ||= User.create(user_id: 12345, name: 'John Doe', email: 'john.doe@tamu.edu', role: 'student')
 

@@ -61,18 +61,26 @@ RSpec.describe SessionsController, type: :controller do
 
   describe 'POST #show' do
     it 'returns the session details for a valid session code' do
-      
+      # whoever wrote these should implement them
+    end
+  end
 
 
   describe 'POST #join' do
     it 'allows a user to join a session with a valid code' do
-      # enter in more logic about joining a session with a valid code
+      # whoever wrote these should implement them
       expect(response).to have_http_status(:success)
     end
 
     it 'does not allow a user to join a session with an invalid code' do
-      # enter in more logic about joining a session with an invalid code
+      # whoever wrote these should implement them
       expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe 'POST #end_session' do
+    it 'allows an instructor to end a session' do
+      # work in progress
     end
   end
 end

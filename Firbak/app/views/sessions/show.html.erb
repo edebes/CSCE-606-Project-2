@@ -26,39 +26,36 @@
             <%= participant.name %>
           </td>
           <td>
-            <%= @session.current_question_for(participant) %>
+            <% q = @session.current_question_for(participant) %>
+            <%= q ? "Question #{q.number}" : "Completed" %>
           </td>
           <td>
-            <%= participant.struggling? %>
+            <%= participant.struggling?(@session) %>
           </td>
         </tr>
       <% end %>
     </tbody>
   </table>
   <p>
-    <%= link_to "End session", end_session_path(@session), method: :post, data: { confirm: "Are you sure you want to end the session?" }, class: "btn btn-danger" %>
+    <%= button_to "Refresh", session_path(@session), method: :get, class: "btn btn-primary" %>
+  </p>
+  <p>
+    <%= button_to "End session", end_session_path(@session), method: :post, class: "btn btn-danger" %>
   </p>
 <% elsif current_user.role == "student" %>
-  <% question = @session.current_question_for(current_user) %>
-  <% if question.nil? %>
+  <% if @session.ended? %>
+    <p>This session has ended.</p>
+  <% elsif @current_question.nil? %>
     <p>You have completed all questions in this session.</p>
   <% else %>
-    <p>
-      Current question: <strong><%= question.body %></strong>
-    </p>
-    <% question.choices.each do |choice| %>
-      <%= form_with url: session_responses_path(@session), method: :post do |form| %>
-        <%= form.hidden_field :question_id, value: question.id %>
-        <%= form.hidden_field :choice_id, value: choice.id %>
-        <%= form.submit choice.body, class: "btn btn-primary" %>
+    <%= form_with url: session_responses_path(@session), method: :post do |form| %>
+      <% @current_question.choices.each do |choice| %>
+        <label><% radio_button_tag :choice_id, choice.id %> <%= choice.body %></label>
       <% end %>
+      <%= form.submit "Submit" %>
     <% end %>
-    <p>
-      <%= link_to "Next question", session_path(@session), method: :get, class: "btn btn-secondary" %>
-    </p>
-  <% end %>
   <p>
-    <%= link_to "Leave session", leave_session_path(@session), method: :post, data: { confirm: "Are you sure you want to leave the session?" }, class: "btn btn-danger" %>
+    <%= button_to "Leave session", leave_session_path(@session), method: :post, class: "btn btn-danger" %>
   </p>
 <% end %>
 
