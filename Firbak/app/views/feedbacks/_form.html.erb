@@ -1,0 +1,19 @@
+<%= form_with model: feedback,
+              url: send_feedback_session_path(
+                @session,
+                to: @recipient.user_id,
+                question: @question.number
+              ),
+              method: :post do |form| %>
+
+  <div class="feedback-form-field feedback-form-text">
+    <%= form.label :content, "Feedback for Question #{@question.number}" %>
+  </div>
+  <div class="feedback-form-field feedback-form-text">
+    <%= form.text_area :content %>
+  </div>
+
+  <div class="feedback-form-field">
+    <%= form.submit "Send feedback" %>
+  </div>
+<% end %>
