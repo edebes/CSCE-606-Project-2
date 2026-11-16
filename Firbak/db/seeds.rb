@@ -105,3 +105,23 @@ question_3_choices.each do |choice|
   question = Question.find_by(body: "6 / 2 = ?")
   question.choices.create!(choice)
 end
+
+# Feedback seed data
+demo_feedback = Feedback.find_by(session: demo_session,
+                                to_user: student,
+                                from_user: instructor,
+                                question: demo_session
+                                          .question_set
+                                          .questions
+                                          .find_by(number: 1)
+                               )
+demo_feedback ||= Feedback.create!(session: demo_session,
+                                to_user: student,
+                                from_user: instructor,
+                                question: demo_session
+                                          .question_set
+                                          .questions.
+                                          find_by(number: 1),
+                                content: "Check your operator and try again!"
+                               )
+

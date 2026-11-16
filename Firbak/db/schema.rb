@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_08_153002) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_13_171103) do
   create_table "choices", force: :cascade do |t|
     t.text "body"
     t.boolean "correct"
@@ -36,6 +36,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_153002) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "feedbacks", force: :cascade do |t|
+    t.text "content"
+    t.integer "to_user_id"
+    t.integer "from_user_id"
+    t.integer "question_id"
+    t.integer "session_id"
+    t.datetime "delivered"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["from_user_id"], name: "index_feedbacks_on_from_user_id"
+    t.index ["question_id"], name: "index_feedbacks_on_question_id"
+    t.index ["session_id"], name: "index_feedbacks_on_session_id"
+    t.index ["to_user_id"], name: "index_feedbacks_on_to_user_id"
   end
 
   create_table "question_sets", force: :cascade do |t|
@@ -88,5 +103,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_153002) do
   add_foreign_key "choices", "questions"
   add_foreign_key "course_memberships", "courses"
   add_foreign_key "course_memberships", "users"
+  add_foreign_key "feedbacks", "questions"
+  add_foreign_key "feedbacks", "sessions"
+  add_foreign_key "feedbacks", "users", column: "from_user_id"
+  add_foreign_key "feedbacks", "users", column: "to_user_id"
   add_foreign_key "questions", "question_sets"
 end
