@@ -270,7 +270,7 @@ RSpec.describe Session, type: :model do
 
       expect(session.current_question_for(student)).to eq(question1)
 
-      Response.create!(session_id: session, user_id: student, question_id: question1, choice_id: choice1)
+      Response.create!(session: session, user: student, question: question1, choice: choice1)
 
       expect(session.current_question_for(student)).to eq(question2)
     end
@@ -280,7 +280,7 @@ RSpec.describe Session, type: :model do
       question = Question.create!(body: "What is 3+3?", number: 3, question_set: question_set)
       choice = Choice.create!(body: "6", correct: true, question: question)
 
-      Response.create!(session_id: session, user_id: student, question_id: question, choice_id: choice)
+      Response.create!(session: session, user: student, question: question, choice: choice)
 
       expect(session.current_question_for(student)).to be_nil
     end
@@ -304,10 +304,10 @@ RSpec.describe Session, type: :model do
       result = session.submit_response(student, question, choice)
 
       expect(result).to be_a(Response)
-      expect(result.session_id).to eq(session)
-      expect(result.user_id).to eq(student)
-      expect(result.question_id).to eq(question)
-      expect(result.choice_id).to eq(choice)
+      expect(result.session).to eq(session)
+      expect(result.user).to eq(student)
+      expect(result.question).to eq(question)
+      expect(result.choice).to eq(choice)
       expect(result.correct).to be true
     end
 

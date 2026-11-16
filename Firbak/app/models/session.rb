@@ -97,10 +97,10 @@ class Session < ApplicationRecord
     return :invalid_choice unless question.choices.include?(choice)
 
     response = Response.create!(
-      session_id: self,
-      user_id: student,
-      question_id: question,
-      choice_id: choice,
+      session: self,
+      user: student,
+      question: question,
+      choice: choice,
       correct: choice.correct
     )
     response

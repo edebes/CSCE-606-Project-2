@@ -3,7 +3,6 @@ class SessionsController < ApplicationController
 
   def show
     @session = Session.find(params[:id])
-    redirect_to join_session_path, alert: "Session not found" and return unless @session
     if @session.host_id == current_user.id
       @host_view = true
     elsif @session.participants.include?(current_user)
