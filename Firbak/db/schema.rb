@@ -41,14 +41,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_035508) do
   create_table "courses_question_sets", id: false, force: :cascade do |t|
     t.integer "course_id", null: false
     t.integer "question_set_id", null: false
+    t.index ["course_id", "question_set_id"], name: "index_courses_question_sets_on_course_id_and_question_set_id"
+    t.index ["question_set_id", "course_id"], name: "index_courses_question_sets_on_question_set_id_and_course_id"
   end
 
   create_table "question_sets", force: :cascade do |t|
     t.string "title"
-    t.integer "owner"
-    t.json "questions", default: []
+    t.integer "owner_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["owner_id"], name: "index_question_sets_on_owner_id"
   end
 
   create_table "questions", force: :cascade do |t|
@@ -94,5 +96,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_035508) do
   add_foreign_key "choices", "questions"
   add_foreign_key "course_memberships", "courses"
   add_foreign_key "course_memberships", "users"
+  add_foreign_key "question_sets", "users", column: "owner_id"
   add_foreign_key "questions", "question_sets"
 end
