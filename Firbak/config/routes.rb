@@ -26,4 +26,7 @@ Rails.application.routes.draw do
     end
     resources :responses, only: [:create]
   end
+
+  get "/sessions/:session_id/feedback", to: "feedbacks#new"
+  post "/sessions/:session_id/feedback", to: "feedbacks#send_feedback", as: :send_feedback_session
 end
