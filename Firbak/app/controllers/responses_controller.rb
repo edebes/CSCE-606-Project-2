@@ -17,10 +17,9 @@ class ResponsesController < ApplicationController
      @response = @session.submit_response(current_user, @question, @choice)
 
      case @response
+     # The result and feedback now stay on the page itself, so take the feedback out of the flash message to avoid showing it twice. 
      when Response
-       message = @response.correct ? "Correct answer!" : "Incorrect answer."
-       message += " Feedback: #{@choice.feedback}" if @choice&.feedback.present?
-       redirect_to session_path(@session), notice: message
+       redirect_to session_path(@session)
      when :ended
        redirect_to session_path(@session), alert: "Session has ended."
      when :not_participant

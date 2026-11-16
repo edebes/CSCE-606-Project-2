@@ -1,0 +1,54 @@
+<h1>Session summary</h1>
+
+<p>
+  Question set: <strong><%= @session.question_set.title %></strong>
+  &middot; Join code <%= @session.code %>
+</p>
+
+<% if @summary["answered"].to_i.zero? %>
+  <p>No answers were submitted in this session.</p>
+<% else %>
+  <p>
+    <%= @summary["participant_count"].to_i %> participants,
+    <%= @summary["answered"] %> answers (first attempts only)
+  </p>
+
+  <h2>Most missed</h2>
+  <ol id="most-missed">
+    <% @summary["most_missed"].each do |question| %>
+      <li>
+        <%= question["body"] %>
+        (<%= question["missed"] %> of <%= question["answered"] %> missed)
+      </li>
+    <% end %>
+  </ol>
+
+  <h2>Questions</h2>
+  <% @summary.fetch("questions", []).each do |question| %>
+    <section class="question-summary">
+      <h3>Question <%= question["number"] %>: <%= question["body"] %></h3>
+      <p><%= question["correct"] %> of <%= question["answered"] %> correct</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Choice</th>
+            <th scope="col">Times chosen</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% question["choices"].each do |choice| %>
+            <tr>
+              <td><%= choice["body"] %></td>
+              <td><%= choice["count"] %></td>
+              <td><%= "Correct answer" if choice["correct"] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  <% end %>
+<% end %>
+
+<%= link_to "Back to question sets", question_sets_path %>
