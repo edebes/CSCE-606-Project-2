@@ -3,6 +3,14 @@ class SessionsController < ApplicationController
 
   def show
     @session = Session.find(params[:id])
+    if @session.host_id == current_user.id
+      @host_view = true
+    elsif @session.participants.include?(current_user)
+      @current_question = @session.current_question_for(current_user) unless @session.ended?
+    else
+      redirect_to join_session_path, alert: "You are not a participant in this session."
+      return
+    end
   end
 
   def new_join
@@ -30,6 +38,40 @@ class SessionsController < ApplicationController
     else
       flash.now[:alert] = "Invalid session code"
       render :new_join, status: :unprocessable_entity
+    end
+  end
+
+  def end_session
+    @session = Session.find(params[:id])
+    if @session.host_id != current_user.id
+      redirect_to root_path, alert: "You are not authorized to do that."
+      return
+    end
+
+    if @session.ended?
+      redirect_to session_path(@session), notice: "Session has already ended."
+      return
+    end
+    @session.end
+    redirect_to session_path(@session), notice: "Session ended"
+  end
+
+  def leave
+    @session = Session.find(params[:id])
+    if @session.host_id == current_user.id
+      @session.end
+      redirect_to question_sets_path, notice: "Session ended."
+    else
+      redirect_to join_session_path, notice: "You have left the session."
+    end
+  end
+
+  private
+
+  def require_host
+    @session = Session.find(params[:id])
+    unless @session.host_id == current_user.id
+      redirect_to root_path, alert: "You are not authorized to perform this action."
     end
   end
 end

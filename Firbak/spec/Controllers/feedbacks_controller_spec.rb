@@ -23,7 +23,7 @@ RSpec.describe FeedbacksController, type: :controller do
             Choice.create(
                 id: 2,
                 body: "3",
-                is_correct: false
+                is_correct: false,
                 feedback: 1900,
             )
         end
