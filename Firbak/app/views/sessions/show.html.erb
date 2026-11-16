@@ -48,8 +48,20 @@
     </p>
   <% else %>
     <p>Session has ended.</p>
+    <p><%= link_to "View session summary", summary_session_path(@session) %></p>
   <% end %>
 <% else %>
+  <% if @latest_response %>
+    <% if @latest_response.correct %>
+      <p class="result correct">Correct! (Question <%= @latest_response.question.number %>)</p>
+    <% elsif @current_question && @latest_response.question_id == @current_question.id %>
+      <p class="result incorrect">Not quite.</p>
+      <% if @latest_response.feedback %>
+        <p class="choice-feedback"><%= @latest_response.feedback %></p>
+      <% end %>
+    <% end %>
+  <% end %>
+
   <% if @session.ended? %>
     <p>Session has ended.</p>
   <% elsif @current_question.nil? %>

@@ -361,11 +361,11 @@ RSpec.describe Session, type: :model do
       choice1 = Choice.create!(body: "18", correct: true, question: question1)
       choice2 = Choice.create!(body: "20", correct: true, question: question2)
 
-      Response.create!(session_id: session, user_id: student, question_id: question1, choice_id: choice1)
+      Response.create!(session: session, user: student, question: question1, choice: choice1)
 
       expect(session.progress_for(student)[:progress_percentage]).to eq(50.0)
 
-      Response.create!(session_id: session, user_id: student, question_id: question2, choice_id: choice2)
+      Response.create!(session: session, user: student, question: question2, choice: choice2)
 
       expect(session.progress_for(student)[:progress_percentage]).to eq(100.0)
     end

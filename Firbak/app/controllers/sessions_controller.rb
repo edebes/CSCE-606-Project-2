@@ -7,6 +7,8 @@ class SessionsController < ApplicationController
       @host_view = true
     elsif @session.participants.include?(current_user)
       @current_question = @session.current_question_for(current_user) unless @session.ended?
+      # #28: the student's most recent answer, so its result and feedback stay on the page after a refresh
+      @latest_response = @session.responses.where(user: current_user).order(:created_at, :id).last
     else
       redirect_to join_session_path, alert: "You are not a participant in this session."
       return
@@ -49,11 +51,27 @@ class SessionsController < ApplicationController
     end
 
     if @session.ended?
-      redirect_to session_path(@session), notice: "Session has already ended."
+      redirect_to summary_session_path(@session), notice: "Session has already ended."
       return
     end
     @session.end
-    redirect_to session_path(@session), notice: "Session ended"
+    redirect_to summary_session_path(@session), notice: "Session ended"
+  end
+
+  # #32: GET /sessions/:id/summary - host only, once the session has ended
+  def summary
+    @session = Session.find(params[:id])
+    if @session.host_id != current_user.id
+      fallback = @session.participants.include?(current_user) ? session_path(@session) : root_path
+      redirect_to fallback, alert: "You are not authorized to do that."
+      return
+    end
+
+    unless @session.ended?
+      redirect_to session_path(@session), alert: "End the session to see its summary."
+      return
+    end
+    @summary = @session.session_summary
   end
 
   def leave

@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     member do
       post :end, action: :end_session
       post :leave
+      get :summary
     end
     resources :responses, only: [:create]
   end

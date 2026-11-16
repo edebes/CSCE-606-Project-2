@@ -118,11 +118,46 @@ class Session < ApplicationRecord
 
   private
 
+  # #32: counts each student's FIRST attempt per question, so getting it right
+  # later doesn't hide what the class got wrong the first time.
+
   def build_summary
+
+    first_attempts = responses.order(:created_at, :id)
+                    .group_by{ |response| [response.user_id, response.question_id] }
+                    .values.map(&:first)
+    by_question = first_attempts.group_by(&:question_id)
+
+    questions = ordered_questions.includes(:choices).map do |question|
+      question_responses = by_question.fetch(question.id, [])
+      correct = question_responses.count(&:correct)
+
     {
-      "answered" => 0,
-      "most_missed" => [],
-      "participant_count" => participants.count
+      "question_id" => question.id,
+        "number" => question.number,
+        "body" => question.body,
+        "answered" => question_responses.size,
+        "correct" => correct,
+        "missed" => question_responses.size - correct,
+        "choices" => question.choices.sort_by(&:id).map do |choice|
+          {
+            "body" => choice.body,
+            "correct" => choice.correct,
+            "count" => question_responses.count { |response| response.choice_id == choice.id }
+          }
+        end
+      }
+    end
+
+    most_missed = questions.select { |question| question["answered"].positive? }
+                           .sort_by { |question| [ -question["missed"], question["number"].to_i ] }
+
+    {
+      "answered" => first_attempts.size,
+      "participant_count" => participants.count,
+      "questions" => questions,
+      "most_missed" => most_missed.map { |question| question.slice("question_id", "number", "body", "answered", "missed") }
     }
   end
 end
+
