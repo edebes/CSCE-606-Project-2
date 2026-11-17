@@ -45,6 +45,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_055151) do
     t.index ["question_set_id", "course_id"], name: "index_courses_question_sets_on_question_set_id_and_course_id"
   end
 
+  create_table "feedbacks", force: :cascade do |t|
+    t.text "content"
+    t.integer "to_user_id"
+    t.integer "from_user_id"
+    t.integer "question_id"
+    t.integer "session_id"
+    t.datetime "delivered"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["from_user_id"], name: "index_feedbacks_on_from_user_id"
+    t.index ["question_id"], name: "index_feedbacks_on_question_id"
+    t.index ["session_id"], name: "index_feedbacks_on_session_id"
+    t.index ["to_user_id"], name: "index_feedbacks_on_to_user_id"
+  end
+
   create_table "question_sets", force: :cascade do |t|
     t.string "title"
     t.integer "owner_id", null: false
@@ -107,6 +122,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_055151) do
   add_foreign_key "choices", "questions"
   add_foreign_key "course_memberships", "courses"
   add_foreign_key "course_memberships", "users"
+  add_foreign_key "feedbacks", "questions"
+  add_foreign_key "feedbacks", "sessions"
+  add_foreign_key "feedbacks", "users", column: "from_user_id"
+  add_foreign_key "feedbacks", "users", column: "to_user_id"
   add_foreign_key "question_sets", "users", column: "owner_id"
   add_foreign_key "questions", "question_sets"
 end
