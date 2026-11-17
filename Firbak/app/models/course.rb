@@ -1,8 +1,9 @@
-#Renamed to Course since Class might conflict as and object
+#Renamed to Course since Class might conflict as an object
 
 class Course < ApplicationRecord
     has_many :course_memberships, dependent: :destroy
     has_many :members, through: :course_memberships, source: :user
+    has_and_belongs_to_many :question_sets
 
     has_many :instructors, -> {where(course_memberships: {role: "instructor"})},
                 through: :course_memberships, source: :user

@@ -1,17 +1,28 @@
 class QuestionSetsController < ApplicationController
   before_action :require_login
-  before_action :set_question_set, only: :launch_session
+  before_action :set_question_set, only: [:edit, :update, :launch_session]
 
   def index
     @question_sets = if current_user.can_manage_sets?
-                       QuestionSet.where(owner_id: current_user.id).order(:title)
+                       QuestionSet.where(owner: current_user).order(:title)
                      else
                        QuestionSet.none
                      end
   end
+  def edit
 
+  end
+
+  def update
+    if @question_set.update(question_set_params)
+      redirect_to question_sets_path, notice: "Question set updated"
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+  
   def launch_session
-    unless current_user.can_manage_sets? && @question_set.owner_id == current_user.id
+    unless current_user.can_manage_sets? && @question_set.owner == current_user
       flash[:alert] = "You are not authorized to do that"
       redirect_to question_sets_path and return
     end
