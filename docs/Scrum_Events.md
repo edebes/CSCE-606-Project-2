@@ -104,3 +104,54 @@ Summary:
   - Decision: need to refresh page for live feedback if no javascript
 - QuestionSet belongs to one user, belongs to many classes - Alex
 - update README for running project - Gokulan
+
+### Sprint Review & Retrospective 11/15
+Attendees: Alex Gonce, Eric Debes, Jaelen Dixon, Gokulan Valavan, Sapphire
+
+Summary: 
+- demoed current project state to Sapphire
+  - looks good for what it currently does
+  - can’t have same student join multiple times, good
+- reviewed expectations of attendance at scrum meetings
+- discussed being more conscious of tasks story points worth and being more clear about expectations with high value stories
+- reviewing some of the final PRs for the sprint
+- review story dependences during sprint planning & still try to pre-assign tasks but be more communicative if high priority/relevancy tasks aren’t getting done
+
+### In-class review 11/16
+Summary:
+- Group 1
+  - logged in as student
+  - joined a session
+  - returning to a session is same as joining a session
+  - logged in as teacher
+  - get a new join code every time they hit “new session” for a question set
+  - it shouldn’t say live if teacher joins session that should be dead
+- Suggestions
+  - make sessions persistent in the database
+  - it seems like rejoining a session is same as joining a session
+- Group 2
+  - logged in as student
+  - join codes are made randomly, checking against currently in use codes
+
+# Sprint 3: Nov 16-Nov 29
+## Goal: Finish MVP features & style project
+## Sprint Meetings
+### Sprint Planning 11/16
+Attendees: Alex Gonce, Jaelen Dixon, Yashas Suresh, Gokulan Valavan
+
+Notes: 
+
+Suggested backlog: (edited as discussed during meeting)
+- add CSS to all pages
+- separate tasks for most each page
+- add user registration page (can only create students accounts)
+- add page for profs to view all courses/students
+- add to that page buttons to upgrade roles (student -> ta or prof)
+- each question will have its own edit page
+- need to make sure adding a new question button is added
+
+User Stories Backlog added to projects
+
+Sprint may end end early but there's thanksgiving break so there may be break between sprints
+
+If someone has extra time, start work on presentation/start plan on demo
