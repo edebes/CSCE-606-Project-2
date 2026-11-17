@@ -16,8 +16,15 @@ Rails.application.routes.draw do
   get  "/sessions/join", to: "sessions#new_join", as: :join_session
   post "/sessions/join", to: "sessions#join"
 
-  resources :sessions, only: [:show]
 
   get "/sessions/:session_id/feedback", to: "feedbacks#new"
   post "/sessions/:session_id/feedback", to: "feedbacks#send_feedback", as: :send_feedback_session
+  resources :sessions, only: [:show] do
+    member do
+      post :end, action: :end_session
+      post :leave
+      get :summary
+    end
+    resources :responses, only: [:create]
+  end
 end

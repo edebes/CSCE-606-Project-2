@@ -5,7 +5,7 @@ RSpec.describe QuestionSetsController, type: :controller do
         if QuestionSet.where(id: 1000).empty?
             QuestionSet.create(
                 id: 1000,
-                questions: [1000, 2000]
+                questions: [1000, 2000],
                 classes: "Math 101"
                 )
         end
@@ -31,7 +31,7 @@ RSpec.describe QuestionSetsController, type: :controller do
             Choice.create(
                 id: 1,
                 body: "1",
-                is_correct: false
+                is_correct: false,
                 feedback: "Try again",
                 question: 1000 
             )
@@ -40,7 +40,7 @@ RSpec.describe QuestionSetsController, type: :controller do
             Choice.create(
                 id: 2,
                 body: "2",
-                is_correct: false
+                is_correct: false,
                 feedback: "Try again",
                 question: 1000 
             )
@@ -49,7 +49,7 @@ RSpec.describe QuestionSetsController, type: :controller do
             Choice.create(
                 id: 3,
                 body: "3",
-                is_correct: false
+                is_correct: false,
                 feedback: "Try again",
                 question: 1000 
             )
@@ -58,7 +58,7 @@ RSpec.describe QuestionSetsController, type: :controller do
             Choice.create(
                 id: 4,
                 body: "4",
-                is_correct: true
+                is_correct: true,
                 feedback: "Nice job!",
                 question: 1000 
             )
@@ -67,7 +67,7 @@ RSpec.describe QuestionSetsController, type: :controller do
             Choice.create(
                 id: 1,
                 body: "5",
-                is_correct: false
+                is_correct: false,
                 feedback: "Try again",
                 question: 2000 
             )
@@ -76,7 +76,7 @@ RSpec.describe QuestionSetsController, type: :controller do
             Choice.create(
                 id: 2,
                 body: "6",
-                is_correct: false
+                is_correct: false,
                 feedback: "Nice job",
                 question: 2000 
             )

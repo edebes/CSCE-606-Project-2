@@ -14,6 +14,7 @@ class LoginsController < ApplicationController
   end
 
   def destroy
+    # Session.where(host_id: current_user.id, status: "active").find_each(&:end) if current_user
     reset_session
     redirect_to login_path, notice: "Logged out"
   end

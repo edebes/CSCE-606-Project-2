@@ -1,0 +1,45 @@
+# Deploys the Rails app in Firbak/ to Heroku on every push to main.
+#
+# One-time setup (repo admin): Settings -> Secrets and variables -> Actions
+#   HEROKU_API_KEY   long-lived token from `heroku authorizations:create`
+#   HEROKU_APP_NAME  the Heroku app's name, e.g. firbak
+#
+# Can also be run by hand: Actions tab -> "Deploy to Heroku" -> Run workflow.
+name: Deploy to Heroku
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Never run two deploys at the same time; a newer push cancels an older one.
+concurrency:
+  group: heroku-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the full history (needed to split out Firbak/)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push only the Firbak/ folder to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: |
+          if [ -z "$HEROKU_API_KEY" ] || [ -z "$HEROKU_APP_NAME" ]; then
+            echo "HEROKU_API_KEY and HEROKU_APP_NAME secrets must be set" >&2
+            exit 1
+          fi
+          git subtree split --prefix Firbak -b heroku-deploy
+          git push --force "https://heroku:${HEROKU_API_KEY}@git.heroku.com/${HEROKU_APP_NAME}.git" heroku-deploy:main
+          # Procfile's `release: bin/rails db:migrate` runs migrations on Heroku after the build.
+
+      - name: Show the deployed URL
+        env:
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: echo "Deployed to https://${HEROKU_APP_NAME}.herokuapp.com"

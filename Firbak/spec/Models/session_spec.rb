@@ -233,4 +233,147 @@ RSpec.describe Session, type: :model do
       expect(session.allow_resubmission(student, 1)).to eq(false)
     end
   end
+
+  describe "ordered_questions" do
+    let!(:session) do
+      described_class.create!(
+        question_set: question_set,
+        host: host,
+        code: "0001",
+        status: "active"
+      )
+    end
+
+    it "returns questions in order of their number" do
+      question1 = Question.create!(body: "What is 2+2?", number: 2, question_set: question_set)
+      question2 = Question.create!(body: "What is 3+3?", number: 3, question_set: question_set)
+
+      expect(session.ordered_questions).to eq([question1, question2])
+    end
+  end
+
+  describe "current_question_for" do
+    let!(:session) do
+      described_class.create!(
+        question_set: question_set,
+        host: host,
+        code: "0002",
+        status: "active"
+      )
+    end
+
+    it "returns the first unanswered question for a participant" do
+      session.join(student, "0002")
+      question1 = Question.create!(body: "What is 1+1?", number: 1, question_set: question_set)
+      question2 = Question.create!(body: "What is 2+2?", number: 2, question_set: question_set)
+      choice1 = Choice.create!(body: "2", correct: true, question: question1)
+
+      expect(session.current_question_for(student)).to eq(question1)
+
+      Response.create!(session: session, user: student, question: question1, choice: choice1)
+
+      expect(session.current_question_for(student)).to eq(question2)
+    end
+
+    it "returns nil if all questions are answered" do
+      session.join(student, "0002")
+      question = Question.create!(body: "What is 3+3?", number: 3, question_set: question_set)
+      choice = Choice.create!(body: "6", correct: true, question: question)
+
+      Response.create!(session: session, user: student, question: question, choice: choice)
+
+      expect(session.current_question_for(student)).to be_nil
+    end
+  end
+
+  describe "submit_response" do
+    let!(:session) do
+      described_class.create!(
+        question_set: question_set,
+        host: host,
+        code: "0003",
+        status: "active"
+      )
+    end
+
+    it "creates a response for a valid submission" do
+      session.join(student, "0003")
+      question = Question.create!(body: "What is 4+4?", number: 4, question_set: question_set)
+      choice = Choice.create!(body: "8", correct: true, question: question)
+
+      result = session.submit_response(student, question, choice)
+
+      expect(result).to be_a(Response)
+      expect(result.session).to eq(session)
+      expect(result.user).to eq(student)
+      expect(result.question).to eq(question)
+      expect(result.choice).to eq(choice)
+      expect(result.correct).to be true
+    end
+
+    it "rejects submission from a non-participant" do
+      question = Question.create!(body: "What is 5+5?", number: 5, question_set: question_set)
+      choice = Choice.create!(body: "10", correct: true, question: question)
+
+      expect(session.submit_response(ta, question, choice)).to eq(:not_participant)
+    end
+
+    it "rejects submission for an invalid question" do
+      session.join(student, "0003")
+      other_question = Question.create!(body: "What is 6+6?", number: 6, question_set: QuestionSet.create!(title: "Other Set", owner_id: host.id))
+      choice = Choice.create!(body: "12", correct: true, question: other_question)
+
+      expect(session.submit_response(student, other_question, choice)).to eq(:invalid_question)
+    end
+
+    it "rejects submission for an invalid choice" do
+      session.join(student, "0003")
+      question = Question.create!(body: "What is 7+7?", number: 7, question_set: question_set)
+      invalid_choice = Choice.create!(body: "15", correct: false, question: Question.create!(body: "Other Question", number: 8, question_set: QuestionSet.create!(title: "Other Set", owner_id: host.id)))
+
+      expect(session.submit_response(student, question, invalid_choice)).to eq(:invalid_choice)
+    end
+
+    it "rejects submission after the session has ended" do
+      session.join(student, "0003")
+      session.end
+      question = Question.create!(body: "What is 8+8?", number: 8, question_set: question_set)
+      choice = Choice.create!(body: "16", correct: true, question: question)
+
+      expect(session.submit_response(student, question, choice)).to eq(:ended)
+    end
+  end
+
+  describe "progress_for" do
+    let!(:session) do
+      described_class.create!(
+        question_set: question_set,
+        host: host,
+        code: "0004",
+        status: "active"
+      )
+    end
+
+    it "returns the number of answered questions for a participant" do
+      session.join(student, "0004")
+      question1 = Question.create!(body: "What is 9+9?", number: 9, question_set: question_set)
+      question2 = Question.create!(body: "What is 10+10?", number: 10, question_set: question_set)
+      choice1 = Choice.create!(body: "18", correct: true, question: question1)
+      choice2 = Choice.create!(body: "20", correct: true, question: question2)
+
+      Response.create!(session: session, user: student, question: question1, choice: choice1)
+
+      expect(session.progress_for(student)[:progress_percentage]).to eq(50.0)
+
+      Response.create!(session: session, user: student, question: question2, choice: choice2)
+
+      expect(session.progress_for(student)[:progress_percentage]).to eq(100.0)
+    end
+
+    it "returns 0 for a participant with no responses" do
+      session.join(student, "0004")
+
+      expect(session.progress_for(student)[:progress_percentage]).to eq(0)
+    end
+  end
 end
