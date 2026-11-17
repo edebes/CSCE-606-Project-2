@@ -38,6 +38,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_055151) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "courses_question_sets", id: false, force: :cascade do |t|
+    t.integer "course_id", null: false
+    t.integer "question_set_id", null: false
+    t.index ["course_id", "question_set_id"], name: "index_courses_question_sets_on_course_id_and_question_set_id"
+    t.index ["question_set_id", "course_id"], name: "index_courses_question_sets_on_question_set_id_and_course_id"
+  end
+
   create_table "feedbacks", force: :cascade do |t|
     t.text "content"
     t.integer "to_user_id"
@@ -51,11 +58,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_055151) do
     t.index ["question_id"], name: "index_feedbacks_on_question_id"
     t.index ["session_id"], name: "index_feedbacks_on_session_id"
     t.index ["to_user_id"], name: "index_feedbacks_on_to_user_id"
-  create_table "courses_question_sets", id: false, force: :cascade do |t|
-    t.integer "course_id", null: false
-    t.integer "question_set_id", null: false
-    t.index ["course_id", "question_set_id"], name: "index_courses_question_sets_on_course_id_and_question_set_id"
-    t.index ["question_set_id", "course_id"], name: "index_courses_question_sets_on_question_set_id_and_course_id"
   end
 
   create_table "question_sets", force: :cascade do |t|
