@@ -32,7 +32,7 @@ RSpec.describe Response, type: :model do
       instructor = User.find_by(user_id: 24680)
       session = Session.find_by(host_id: instructor.id)
 
-      response = described_class.new(session_id: session, user_id: user, question_id: question, choice_id: choice)
+      response = described_class.new(session: session, user: user, question: question, choice: choice)
       expect(response).to be_valid
     end
 
@@ -41,7 +41,7 @@ RSpec.describe Response, type: :model do
       question = Question.find_by(body: '3 * 2 = ?')
       choice = Choice.find_by(body: '6')
 
-      response = described_class.new(session_id: nil, user_id: user, question_id: question, choice_id: choice)
+      response = described_class.new(session: nil, user: user, question: question, choice: choice)
       expect(response).not_to be_valid
     end
 
@@ -50,7 +50,7 @@ RSpec.describe Response, type: :model do
       choice = Choice.find_by(body: '6')
       session = Session.find_by(host_id: 24680)
 
-      response = described_class.new(session_id: session, user_id: nil, question_id: question, choice_id: choice)
+      response = described_class.new(session: session, user: nil, question: question, choice: choice)
       expect(response).not_to be_valid
     end
 
@@ -59,7 +59,7 @@ RSpec.describe Response, type: :model do
       choice = Choice.find_by(body: '6')
       session = Session.find_by(host_id: 24680)
 
-      response = described_class.new(session_id: session, user_id: user, question_id: nil, choice_id: choice)
+      response = described_class.new(session: session, user: user, question: nil, choice: choice)
       expect(response).not_to be_valid
     end
 
@@ -68,7 +68,7 @@ RSpec.describe Response, type: :model do
       question = Question.find_by(body: '3 * 2 = ?')
       session = Session.find_by(host_id: 24680)
 
-      response = described_class.new(session_id: session, user_id: user, question_id: question, choice_id: nil)
+      response = described_class.new(session: session, user: user, question: question, choice: nil)
       expect(response).not_to be_valid
     end
   end

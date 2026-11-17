@@ -284,6 +284,58 @@ RSpec.describe Session, type: :model do
 
       expect(session.current_question_for(student)).to be_nil
     end
+
+    it "does not change question on incorrect response" do
+      session.join(student, "0002")
+      question1 = Question.create!(body: "What is 1+1?", number: 1, question_set: question_set)
+      question2 = Question.create!(body: "What is 2+2?", number: 2, question_set: question_set)
+      choice1 = Choice.create!(body: "2", correct: true, question: question1)
+      choice2 = Choice.create!(body: "3", correct: false, question: question1)
+
+      expect(session.current_question_for(student)).to eq(question1)
+
+      Response.create!(session: session, user: student, question: question1, choice: choice2)
+
+      expect(session.current_question_for(student)).to eq(question1)
+    end
+
+    it "does not change question on correct response from other student" do
+      student2 = User.find_by(email: "john.session@tamu.edu") || create_user!(user_id: 9004, name: "John Student", email: "john.session@tamu.edu", role: "student")
+      session.join(student, "0002")
+      session.join(student2, "0002")
+      question1 = Question.create!(body: "What is 1+1?", number: 1, question_set: question_set)
+      question2 = Question.create!(body: "What is 2+2?", number: 2, question_set: question_set)
+      choice1 = Choice.create!(body: "2", correct: true, question: question1)
+
+      expect(session.current_question_for(student)).to eq(question1)
+
+      Response.create!(session: session, user: student2, question: question1, choice: choice1)
+
+      expect(session.current_question_for(student)).to eq(question1)
+    end
+
+    it "does not change question on correct response in another session" do
+      session2 = described_class.create!(question_set: question_set, host: host, code: "0003", status: "active")
+      session.join(student, "0002")
+      session.join(student, "0003")
+      question1 = Question.create!(body: "What is 1+1?", number: 1, question_set: question_set)
+      question2 = Question.create!(body: "What is 2+2?", number: 2, question_set: question_set)
+      choice1 = Choice.create!(body: "2", correct: true, question: question1)
+
+      expect(session.current_question_for(student)).to eq(question1)
+
+      Response.create!(session: session2, user: student, question: question1, choice: choice1)
+
+      expect(session.current_question_for(student)).to eq(question1)
+    end
+
+    it "is ordered by number, not id" do
+      session.join(student, "0002")
+      question2 = Question.create!(body: "What is 1+1?", number: 2, question_set: question_set)
+      question1 = Question.create!(body: "What is 2+2?", number: 1, question_set: question_set)
+
+      expect(session.current_question_for(student)).to eq(question1)
+    end
   end
 
   describe "submit_response" do
@@ -342,6 +394,13 @@ RSpec.describe Session, type: :model do
 
       expect(session.submit_response(student, question, choice)).to eq(:ended)
     end
+
+    it "rejects submission if there is no choice" do
+      session.join(student, "0003")
+      question = Question.create!(body: "What is 8+8?", number: 8, question_set: question_set)
+
+      expect(session.submit_response(student, question, nil)).to eq(:invalid_choice)
+    end
   end
 
   describe "progress_for" do
@@ -374,6 +433,25 @@ RSpec.describe Session, type: :model do
       session.join(student, "0004")
 
       expect(session.progress_for(student)[:progress_percentage]).to eq(0)
+    end
+
+    it "cannot exceed 100% for progress percentage" do
+      session.join(student, "0004")
+      question1 = Question.create!(body: "What is 9+9?", number: 9, question_set: question_set)
+      question2 = Question.create!(body: "What is 10+10?", number: 10, question_set: question_set)
+      choice1 = Choice.create!(body: "18", correct: true, question: question1)
+      choice2 = Choice.create!(body: "19", correct: false, question: question1)
+      choice3 = Choice.create!(body: "20", correct: true, question: question2)
+
+      Response.create!(session: session, user: student, question: question1, choice: choice2)
+      Response.create!(session: session, user: student, question: question1, choice: choice1)
+      Response.create!(session: session, user: student, question: question2, choice: choice3)
+
+      expect(session.progress_for(student)[:progress_percentage]).to eq(100.0)
+
+      Response.create!(session: session, user: student, question: question2, choice: choice3)
+
+      expect(session.progress_for(student)[:progress_percentage]).to eq(100.0)
     end
   end
 end

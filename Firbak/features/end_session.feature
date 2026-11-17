@@ -42,6 +42,13 @@ Scenario: instructor ends an active session
   Then I should see "Session ended"
   And  the session "1234" should have status "ended"
 
+Scenario: instructor ends a session by logging out
+  When I log out
+  And  I log in as "alice@gmail.com"
+  And  I am in the live session "1234"
+  Then I should see "Session has ended"
+  And  I should not be able to submit an answer
+
 Scenario: students cannot submit answers after the session ends
   When I end the session "1234"
   And  I log out
@@ -51,8 +58,7 @@ Scenario: students cannot submit answers after the session ends
   And  I should not be able to submit an answer
 
 Scenario: a student cannot end the session
-  When I log out
-  And  I log in as "alice@gmail.com"
+  When I log in as "alice@gmail.com"
   And  I am in the live session "1234"
   When I try to end the session "1234"
   Then I should see "You are not authorized to do that"
