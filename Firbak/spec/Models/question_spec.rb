@@ -7,7 +7,7 @@ RSpec.describe Question, type: :model do
     owner = User.find_or_create_by!(email: "spec.owner@tamu.edu") do |u|
       u.user_id = 7001; u.name = "Spec Owner"; u.role = "instructor"
     end
-    set = QuestionSet.find_or_create_by!(title: "Spec Set", owner_id: owner.id)
+    set = QuestionSet.find_or_create_by!(title: "Spec Set", owner: owner)
     question = described_class.find_by(body: '2 x 3 = ?')
     question ||= described_class.create(body: '2 x 3 = ?', number: 1)
 

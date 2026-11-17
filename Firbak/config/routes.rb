@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   post "/login",  to: "logins#create"
   post "/logout", to: "logins#destroy", as: :logout
 
-  resources :question_sets, only: [:index] do
+  resources :question_sets, only: [:index, :edit, :update] do
     member do
       post :launch_session
     end
