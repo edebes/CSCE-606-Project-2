@@ -2,7 +2,9 @@ class QuestionSet < ActiveRecord::Base
   validates :title, presence: true
   validates :owner, presence: true
 
-  has_many :questions
+  # Sessions go first: their responses point at this set's questions and choices.
+  has_many :sessions, dependent: :destroy
+  has_many :questions, dependent: :destroy
   has_and_belongs_to_many :courses
   belongs_to :owner, class_name: 'User'
 

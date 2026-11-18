@@ -3,15 +3,15 @@ require "rails_helper"
 # Issue #32 - summary of answers and most-missed questions when a session ends
 RSpec.describe Session, "summary", type: :model do
   let(:host) do
-    User.create!(user_id: 801, name: "Anne", email: "anne.summary@tamu.edu",
+    User.create!(name: "Anne", email: "anne.summary@tamu.edu",
                  role: "instructor", password: "password123")
   end
   let(:alice) do
-    User.create!(user_id: 802, name: "Alice", email: "alice.summary@tamu.edu",
+    User.create!(name: "Alice", email: "alice.summary@tamu.edu",
                  role: "student", password: "password123")
   end
   let(:bob) do
-    User.create!(user_id: 803, name: "Bob", email: "bob.summary@tamu.edu",
+    User.create!(name: "Bob", email: "bob.summary@tamu.edu",
                  role: "student", password: "password123")
   end
   let(:question_set) { QuestionSet.create!(title: "Summary Set", owner_id: host.id) }

@@ -36,7 +36,6 @@ Given('the following users exist:') do |table|
         password = attrs['password'].presence || 'password123'
         User.create!(
           id: attrs['id'],
-          user_id: attrs['user_id'].presence || attrs['id'],
           name: attrs['name'],
           email: attrs['email'],
           role: attrs['role'].to_s.downcase,

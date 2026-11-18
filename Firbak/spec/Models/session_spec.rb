@@ -15,17 +15,17 @@ RSpec.describe Session, type: :model do
 
   let!(:host) do
     User.find_by(email: "anne.session@tamu.edu") ||
-      create_user!(user_id: 9001, name: "Anne Host", email: "anne.session@tamu.edu", role: "instructor")
+      create_user!(name: "Anne Host", email: "anne.session@tamu.edu", role: "instructor")
   end
 
   let!(:student) do
     User.find_by(email: "alice.session@tamu.edu") ||
-      create_user!(user_id: 9002, name: "Alice Student", email: "alice.session@tamu.edu", role: "student")
+      create_user!(name: "Alice Student", email: "alice.session@tamu.edu", role: "student")
   end
 
   let!(:ta) do
     User.find_by(email: "theo.session@tamu.edu") ||
-      create_user!(user_id: 9003, name: "Theo TA", email: "theo.session@tamu.edu", role: "ta")
+      create_user!(name: "Theo TA", email: "theo.session@tamu.edu", role: "ta")
   end
 
   let!(:question_set) do
@@ -300,7 +300,7 @@ RSpec.describe Session, type: :model do
     end
 
     it "does not change question on correct response from other student" do
-      student2 = User.find_by(email: "john.session@tamu.edu") || create_user!(user_id: 9004, name: "John Student", email: "john.session@tamu.edu", role: "student")
+      student2 = User.find_by(email: "john.session@tamu.edu") || create_user!(name: "John Student", email: "john.session@tamu.edu", role: "student")
       session.join(student, "0002")
       session.join(student2, "0002")
       question1 = Question.create!(body: "What is 1+1?", number: 1, question_set: question_set)
