@@ -68,8 +68,8 @@ Scenario: TA can send live feedback to a student
 Scenario: student cannot send live feedback
   Given I log in as "alice@gmail.com"
   And   I am in the live session "1234"
-  When  I try to send live feedback "Nope" to student "Bob"
-  Then  I should see "You are not authorized to do that"
+  Then  I should not see "Give Feedback"
+  And   I should not see "Send Feedback"
 
 Scenario: cannot send live feedback after the session has ended
   Given the session "1234" has ended

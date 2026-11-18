@@ -12,31 +12,43 @@
 
 <% if @host_view %>
   <% if @session.active? %>
-    <table class="table table-striped col-md-12" id="participants">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Current Question</th>
-          <th>Struggling</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @session.participants.each do |participant| %>
-          <tr>
-            <td>
-              <%= participant.name %>
-            </td>
-            <td>
-              <% q = @session.current_question_for(participant) %>
-              <%= q ? "Question #{q.number}" : "Completed" %>
-            </td>
-            <td>
-              <%= participant.struggling?(@session) ? "Yes" : "No" %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <h2> Students' Progress </h2>
+    <% @session.question_set.questions.each do |question| %>
+      <details>
+        <summary>
+          Question <%= question.number %> | <%= truncate(question.body, length: 50) %>
+        </summary>
+        <table>
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Last Answer</th>
+              <th>Give Feedback</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @session.participants.each do |student| %>
+              <% latest_response = @latest_response_by_user[student.id] %>
+              <% if latest_response&.question_id == question.id %>
+                <tr>
+                  <th><%= student.name %></th>
+                  <td><%= latest_response.choice.body %></td>
+                  <td>
+                    <%= link_to "Send Feedback",
+                                new_session_feedback_path(
+                                  @session,
+                                  question: question.number,
+                                  to: student.user_id
+                                ),
+                                class: "btn btn-primary" %>
+                  </td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </details>
+    <% end %>
     <p>
       <%= button_to "Refresh", session_path(@session), method: :get, class: "btn btn-primary" %>
     </p>

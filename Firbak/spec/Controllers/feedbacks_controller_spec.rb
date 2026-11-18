@@ -34,6 +34,16 @@ RSpec.describe FeedbacksController, type: :controller do
       expect(response.body).to include("Send Feedback to John")
       expect(response.body).to include("Feedback for Question 1")
     end
+
+    it "assigns the correct question based on question number" do
+      get :new, params: {
+        session_id: live_session_id,
+        question: question.number,
+        to: student.user_id
+      }
+
+      expect(assigns(:question)).to eq(question)
+    end
   end
 
   describe "POST #send_feedback" do

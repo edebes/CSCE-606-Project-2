@@ -5,6 +5,17 @@ class SessionsController < ApplicationController
     @session = Session.find(params[:id])
     if @session.host_id == current_user.id
       @host_view = true
+      if @session.active?
+        #@latest_responses_by_question = {}
+        #@session.responses.includes(:choice).order(:created_at, :id).each do |response|
+        #  (@latest_responses_by_question[response.question_id] ||= {})[response.user_id] = response
+        #end
+
+        @latest_response_by_user = {}
+        @session.responses.includes(:question, :choice).order(:created_at, :id).each do |response|
+          @latest_response_by_user[response.user_id] = response
+        end
+      end
     elsif @session.participants.include?(current_user)
       @current_question = @session.current_question_for(current_user) unless @session.ended?
       # #28: the student's most recent answer, so its result and feedback stay on the page after a refresh
