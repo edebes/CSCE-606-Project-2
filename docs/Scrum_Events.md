@@ -155,3 +155,11 @@ User Stories Backlog added to projects
 Sprint may end end early but there's thanksgiving break so there may be break between sprints
 
 If someone has extra time, start work on presentation/start plan on demo
+
+### Scrum Meeting 11/13
+Attendees: Alex Gonce, Jaelen Dixon, Gokulan Valavan
+
+Summary: 
+- Alex did some work but not pushed anything
+- Jaelen fixed issues with PR, plans to add buttons later today
+- Gokulan worked on cleaning up database, almost done
