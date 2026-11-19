@@ -8,11 +8,11 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 more_users = [
-  { user_id: 12345, name: 'John Doe',
+  { name: 'John Doe',
     email: 'john.doe@tamu.edu', role: 'student' },
-  { user_id: 24680, name: 'Anne Smith',
+  { name: 'Anne Smith',
     email: 'anne.smith@tamu.edu', role: 'instructor' },
-  { user_id: 13579, name: 'Alfonzo Rebeiro',
+  { name: 'Alfonzo Rebeiro',
     email: 'alfonzo.rebeiro@tamu.edu', role: 'ta' }
 ]
 # t.string :title
@@ -20,7 +20,7 @@ more_users = [
 # t.integer :questions, array: true, default: []
 more_users.each do |user|
   record = User.find_or_initialize_by(email: user[:email])
-  record.user_id = user[:user_id]
+  record.name = user[:name]
   record.name = user[:name]
   record.role = user[:role]
   if record.password_digest.blank?

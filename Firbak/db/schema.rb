@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_16_055151) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_18_121232) do
   create_table "choices", force: :cascade do |t|
     t.text "body"
     t.boolean "correct"
@@ -41,7 +41,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_055151) do
   create_table "courses_question_sets", id: false, force: :cascade do |t|
     t.integer "course_id", null: false
     t.integer "question_set_id", null: false
-    t.index ["course_id", "question_set_id"], name: "index_courses_question_sets_on_course_id_and_question_set_id"
+    t.index ["course_id", "question_set_id"], name: "index_courses_question_sets_on_course_id_and_question_set_id", unique: true
     t.index ["question_set_id", "course_id"], name: "index_courses_question_sets_on_question_set_id_and_course_id"
   end
 
@@ -70,6 +70,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_055151) do
     t.boolean "correct"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["choice_id"], name: "index_responses_on_choice_id"
+    t.index ["question_id"], name: "index_responses_on_question_id"
     t.index ["session_id", "user_id"], name: "index_responses_on_session_id_and_user_id"
   end
 
@@ -95,18 +97,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_055151) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "name"
-    t.string "email"
-    t.string "role"
+    t.string "name", null: false
+    t.string "email", null: false
+    t.string "role", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password_digest"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "choices", "questions"
   add_foreign_key "course_memberships", "courses"
   add_foreign_key "course_memberships", "users"
+  add_foreign_key "courses_question_sets", "courses"
+  add_foreign_key "courses_question_sets", "question_sets"
   add_foreign_key "question_sets", "users", column: "owner_id"
   add_foreign_key "questions", "question_sets"
+  add_foreign_key "responses", "choices"
+  add_foreign_key "responses", "questions"
+  add_foreign_key "responses", "sessions"
+  add_foreign_key "responses", "users"
+  add_foreign_key "session_participants", "sessions"
+  add_foreign_key "session_participants", "users"
+  add_foreign_key "sessions", "question_sets"
+  add_foreign_key "sessions", "users", column: "host_id"
 end

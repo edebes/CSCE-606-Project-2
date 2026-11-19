@@ -2,11 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Response, type: :model do
   before(:each) do
-    user = User.find_by(user_id: 12345)
-    user ||= User.create(user_id: 12345, name: 'John Doe', email: 'john.doe@tamu.edu', role: 'student')
+    user = User.find_by(email: 'john.doe@tamu.edu')
+    user ||= User.create(name: 'John Doe', email: 'john.doe@tamu.edu', role: 'student')
 
-    instructor = User.find_by(user_id: 24680)
-    instructor ||= User.create(user_id: 24680, name: 'Anne Smith', email: 'anne.smith@tamu.edu', role: 'instructor')
+    instructor = User.find_by(email: 'anne.smith@tamu.edu')
+    instructor ||= User.create(name: 'Anne Smith', email: 'anne.smith@tamu.edu', role: 'instructor')
 
     question_set = QuestionSet.find_by(title: 'Sample Question Set')
     question_set ||= QuestionSet.create(title: 'Sample Question Set', owner_id: instructor.id)
@@ -26,10 +26,10 @@ RSpec.describe Response, type: :model do
 
   describe 'validations' do
     it 'is valid with valid attributes' do
-      user = User.find_by(user_id: 12345)
+      user = User.find_by(email: 'john.doe@tamu.edu')
       question = Question.find_by(body: '3 * 2 = ?')
       choice = Choice.find_by(body: '6')
-      instructor = User.find_by(user_id: 24680)
+      instructor = User.find_by(email: 'anne.smith@tamu.edu')
       session = Session.find_by(host_id: instructor.id)
 
       response = described_class.new(session: session, user: user, question: question, choice: choice)
@@ -37,7 +37,7 @@ RSpec.describe Response, type: :model do
     end
 
     it 'is invalid without a session_id' do
-      user = User.find_by(user_id: 12345)
+      user = User.find_by(email: 'john.doe@tamu.edu')
       question = Question.find_by(body: '3 * 2 = ?')
       choice = Choice.find_by(body: '6')
 
@@ -55,7 +55,7 @@ RSpec.describe Response, type: :model do
     end
 
     it 'is invalid without a question_id' do
-      user = User.find_by(user_id: 12345)
+      user = User.find_by(email: 'john.doe@tamu.edu')
       choice = Choice.find_by(body: '6')
       session = Session.find_by(host_id: 24680)
 
@@ -64,7 +64,7 @@ RSpec.describe Response, type: :model do
     end
 
     it 'is invalid without a choice_id' do
-      user = User.find_by(user_id: 12345)
+      user = User.find_by(email: 'john.doe@tamu.edu')
       question = Question.find_by(body: '3 * 2 = ?')
       session = Session.find_by(host_id: 24680)
 

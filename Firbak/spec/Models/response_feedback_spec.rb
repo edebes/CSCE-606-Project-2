@@ -3,11 +3,11 @@ require "rails_helper"
 # Issue #28 - pre-programmed feedback on wrong answers
 RSpec.describe Response, "#feedback", type: :model do
   let(:host) do
-    User.create!(user_id: 701, name: "Anne", email: "anne.feedback@tamu.edu",
+    User.create!(name: "Anne", email: "anne.feedback@tamu.edu",
                  role: "instructor", password: "password123")
   end
   let(:student) do
-    User.create!(user_id: 702, name: "John", email: "john.feedback@tamu.edu",
+    User.create!(name: "John", email: "john.feedback@tamu.edu",
                  role: "student", password: "password123")
   end
   let(:question_set) { QuestionSet.create!(title: "Feedback Set", owner_id: host.id) }

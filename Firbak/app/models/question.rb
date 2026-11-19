@@ -3,7 +3,8 @@ class Question < ApplicationRecord
   validates :number, presence: true
   
   belongs_to :question_set
-  has_many :choices
+  has_many :responses, dependent: :destroy
+  has_many :choices, dependent: :destroy
 
   def add_choice(body:, correct:, feedback: nil)
     choices.create(body: body, correct: correct, feedback: feedback)
