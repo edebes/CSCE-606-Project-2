@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   get  "/login",  to: "logins#new"
   post "/login",  to: "logins#create"
   post "/logout", to: "logins#destroy", as: :logout
+  get "/signup", to: "registrations#new", as: :signup
+  post "/signup", to: "registrations#create"
 
   resources :question_sets, only: [:index, :edit, :update] do
     member do
