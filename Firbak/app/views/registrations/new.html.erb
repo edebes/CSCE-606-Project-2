@@ -1,0 +1,42 @@
+<% content_for :title, "Sign up | Firbak" %>
+
+<h1>Create a student account</h1>
+
+<% if @user.errors.any? %>
+  <div id="error_explanation" role="alert">
+    <h2><%= pluralize(@user.errors.count, "problem") %> with your sign-up:</h2>
+    <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: @user, url: signup_path, method: :post do |f| %>
+  <div>
+    <%= f.label :name, "Name" %>
+    <%= f.text_field :name, autocomplete: "name", required: true %>
+  </div>
+
+  <div>
+    <%= f.label :email, "Email" %>
+    <%= f.email_field :email, autocomplete: "email", required: true %>
+  </div>
+
+  <div>
+    <%= f.label :password, "Password" %>
+    <%= f.password_field :password, autocomplete: "new-password", required: true,
+                         aria: { describedby: "password_hint" } %>
+    <small id="password_hint">At least 8 characters.</small>
+  </div>
+
+  <div>
+    <%= f.label :password_confirmation, "Confirm password" %>
+    <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true %>
+  </div>
+
+  <%= f.submit "Create account" %>
+<% end %>
+<p>New to Firbak? <%= link_to "Create a student account", signup_path %></p>
+<p>Already have an account? <%= link_to "Log in", login_path %></p>

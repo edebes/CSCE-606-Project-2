@@ -21,7 +21,6 @@ more_users = [
 more_users.each do |user|
   record = User.find_or_initialize_by(email: user[:email])
   record.name = user[:name]
-  record.name = user[:name]
   record.role = user[:role]
   if record.password_digest.blank?
     record.password = "password123"
