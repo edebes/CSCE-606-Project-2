@@ -53,7 +53,7 @@ class Session < ApplicationRecord
     return :ended if ended?
     return :invalid_code if submitted_code.blank? || submitted_code.to_s != code.to_s
 
-    participants << user unless participants.include?(user)
+    participants << user unless participants.include?(user) || user.role != "student"
     :ok
   end
 

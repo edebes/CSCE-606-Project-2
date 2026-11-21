@@ -3,7 +3,8 @@ class SessionsController < ApplicationController
 
   def show
     @session = Session.find(params[:id])
-    if @session.host_id == current_user.id
+    allowed_roles = ["instructor", "ta"]
+    if @session.host_id == current_user.id || allowed_roles.include?(current_user.role)
       @host_view = true
     elsif @session.participants.include?(current_user)
       @current_question = @session.current_question_for(current_user) unless @session.ended?
@@ -46,7 +47,7 @@ class SessionsController < ApplicationController
   def end_session
     @session = Session.find(params[:id])
     if @session.host_id != current_user.id
-      redirect_to root_path, alert: "You are not authorized to do that."
+      redirect_to join_session_path, alert: "You are not authorized to do that."
       return
     end
 
