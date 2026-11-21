@@ -6,7 +6,7 @@ class LoginsController < ApplicationController
     user = User.find_by(email: params[:email].to_s.strip)
     if user&.authenticate(params[:password].to_s)
       session[:user_id] = user.id
-      if user.role == "instructor"
+      if user.can_manage_sets?
         redirect_to question_sets_path, notice: "Logged in"
       else
         redirect_to join_session_path, notice: "Logged in"

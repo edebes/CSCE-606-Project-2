@@ -26,6 +26,6 @@ class ApplicationController < ActionController::Base
     return if current_user&.can_manage_sets?
 
     flash[:alert] = "You are not authorized to do that"
-    redirect_back fallback_location: root_path
+    redirect_back fallback_location: join_session_path
   end
 end

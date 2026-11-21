@@ -3,8 +3,7 @@ class SessionsController < ApplicationController
 
   def show
     @session = Session.find(params[:id])
-    allowed_roles = ["instructor", "ta"]
-    if @session.host_id == current_user.id || allowed_roles.include?(current_user.role)
+    if @session.host_id == current_user.id || (@session.participants.include?(current_user) && current_user.can_give_live_feedback?)
       @host_view = true
     elsif @session.participants.include?(current_user)
       @current_question = @session.current_question_for(current_user) unless @session.ended?
@@ -52,18 +51,26 @@ class SessionsController < ApplicationController
     end
 
     if @session.ended?
-      redirect_to summary_session_path(@session), notice: "Session has already ended."
+      if @session.host_id == current_user.id
+        redirect_to summary_session_path(@session), notice: "Session has already ended"
+      else
+        redirect_to join_session_path, notice: "Session ended"
+      end
       return
     end
     @session.end
-    redirect_to summary_session_path(@session), notice: "Session ended"
+    if @session.host_id == current_user.id
+      redirect_to summary_session_path(@session), notice: "Session ended"
+    else
+      redirect_to join_session_path, notice: "Session ended"
+    end
   end
 
   # #32: GET /sessions/:id/summary - host only, once the session has ended
   def summary
     @session = Session.find(params[:id])
     if @session.host_id != current_user.id
-      fallback = @session.participants.include?(current_user) ? session_path(@session) : root_path
+      fallback = @session.participants.include?(current_user) ? session_path(@session) : join_session_path
       redirect_to fallback, alert: "You are not authorized to do that."
       return
     end
@@ -90,7 +97,7 @@ class SessionsController < ApplicationController
   def require_host
     @session = Session.find(params[:id])
     unless @session.host_id == current_user.id
-      redirect_to root_path, alert: "You are not authorized to perform this action."
+      redirect_to join_session_path, alert: "You are not authorized to perform this action."
     end
   end
 end
