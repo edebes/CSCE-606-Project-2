@@ -93,6 +93,7 @@ class Session < ApplicationRecord
   def submit_response(student, question, choice)
     return :ended if ended?
     return :not_participant unless participants.include?(student)
+    return :not_student unless student.role == "student"
     return :invalid_question unless question_set.questions.include?(question)
     return :invalid_choice unless question.choices.include?(choice)
 
@@ -154,7 +155,7 @@ class Session < ApplicationRecord
 
     {
       "answered" => first_attempts.size,
-      "participant_count" => participants.count,
+      "participant_count" => participants.where(role: "student").count,
       "questions" => questions,
       "most_missed" => most_missed.map { |question| question.slice("question_id", "number", "body", "answered", "missed") }
     }

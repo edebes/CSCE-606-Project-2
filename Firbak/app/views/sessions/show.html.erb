@@ -51,7 +51,9 @@
     <% end %>
   <% else %>
     <p>Session has ended.</p>
-    <p><%= link_to "View session summary", summary_session_path(@session) %></p>
+    <% if @session.host_id == current_user.id %>
+      <p><%= link_to "View session summary", summary_session_path(@session) %></p>
+    <% end %>
   <% end %>
 <% else %>
   <% if @latest_response %>

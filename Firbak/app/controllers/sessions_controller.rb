@@ -51,19 +51,11 @@ class SessionsController < ApplicationController
     end
 
     if @session.ended?
-      if @session.host_id == current_user.id
-        redirect_to summary_session_path(@session), notice: "Session has already ended"
-      else
-        redirect_to join_session_path, notice: "Session ended"
-      end
+      redirect_to summary_session_path(@session), notice: "Session has already ended"
       return
     end
     @session.end
-    if @session.host_id == current_user.id
-      redirect_to summary_session_path(@session), notice: "Session ended"
-    else
-      redirect_to join_session_path, notice: "Session ended"
-    end
+    redirect_to summary_session_path(@session), notice: "Session ended"
   end
 
   # #32: GET /sessions/:id/summary - host only, once the session has ended
