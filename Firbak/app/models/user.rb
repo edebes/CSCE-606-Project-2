@@ -25,6 +25,12 @@ class User < ActiveRecord::Base
                     format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :role, presence: true, inclusion: { in: ROLES }
 
+  # #62 additional rules when ppl signup through the form
+  # (save with `context: :registration`). Accounts made in seeds and tests skip these.
+
+  validates :password, presence: true, length: {minimum: 8}, confirmation: true, on: :registration
+  validates :password_confirmation, presence: true, on: :registration
+
   def role?()
     self.role
   end
