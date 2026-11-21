@@ -156,10 +156,19 @@ Sprint may end end early but there's thanksgiving break so there may be break be
 
 If someone has extra time, start work on presentation/start plan on demo
 
-### Scrum Meeting 11/13
+### Scrum Meeting 11/18
 Attendees: Alex Gonce, Jaelen Dixon, Gokulan Valavan
 
 Summary: 
 - Alex did some work but not pushed anything
 - Jaelen fixed issues with PR, plans to add buttons later today
 - Gokulan worked on cleaning up database, almost done
+
+### Scrum Meeting 11/20
+Attendees: Alex Gonce, Eric Debes, Gokulan Valavan
+
+Summary: 
+- Jaelen texted, not much done, should get a PR done by tonight
+- Alex similar
+- Eric almost done with TA view user story
+- scrum on Monday 11/23 at normal class time
