@@ -19,7 +19,7 @@ class RegistrationsController < ApplicationController
       redirect_to join_session_path, notice: "Welcome, #{@user.name}! Your student account is ready."
     else
       flash.now[:alert] = "Please fix the problems below."
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
