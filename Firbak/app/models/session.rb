@@ -59,7 +59,7 @@ class Session < ApplicationRecord
 
   def send_live_feedback(student, content)
     return :ended if ended?
-    return :not_participant unless participants.include?(student)
+    return :not_participant unless participants.where(role: "student").include?(student)
     return :blank if content.blank?
 
     {
