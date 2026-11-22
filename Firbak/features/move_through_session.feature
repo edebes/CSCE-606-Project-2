@@ -73,10 +73,11 @@ Scenario: a student who leaves and rejoins keeps their place
   When  I join the session with code "1234"
   Then  I should see "Question 2 of 2"
 
-Scenario: a TA can join and answer
+Scenario: a TA can join and monitor
   Given I log in as "theo@gmail.com"
   When  I join the session with code "1234"
-  Then  I should see "Question 1 of 2"
+  Then  I should see "Struggling"
+  And   I should not see "Question 1 of 2"
 
 Scenario: the host sees each participant's progress
   Given I log in as "alice@gmail.com"
@@ -100,7 +101,8 @@ Scenario: students are removed when the host ends the session
 Scenario: students are removed when the host leaves the session
   Given I log in as "anne@gmail.com"
   And   I am in the live session "1234"
-  And   I press "Leave session"
+  Then  I should not see "Leave session"
+  When  I press "End session"
   Then  the session "1234" should have status "ended"
 
 Scenario: someone who has not joined cannot see the questions

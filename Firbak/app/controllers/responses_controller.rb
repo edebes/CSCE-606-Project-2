@@ -25,7 +25,9 @@ class ResponsesController < ApplicationController
      when :not_participant
        redirect_to session_path(@session), alert: "You are not a participant in this session."
      when :not_student
-       redirect_to session_path(@session), alert: "You are not a student"
+       redirect_to session_path(@session), alert: "Only students can submit answers."
+     when :not_recipient
+       redirect_to session_path(@session), alert: "Only students can receive feedback."
      when :invalid_question, :invalid_choice
        redirect_to session_path(@session), alert: "Invalid question or choice."
      else

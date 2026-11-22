@@ -18,6 +18,11 @@ RSpec.describe Session, type: :model do
       create_user!(name: "Anne Host", email: "anne.session@tamu.edu", role: "instructor")
   end
 
+  let!(:instructor) do
+    User.find_by(email: "jim.session@tamu.edu") ||
+      create_user!(name: "Jim Host", email: "jim.session@tamu.edu", role: "instructor")
+  end
+
   let!(:student) do
     User.find_by(email: "alice.session@tamu.edu") ||
       create_user!(name: "Alice Student", email: "alice.session@tamu.edu", role: "student")
@@ -126,6 +131,11 @@ RSpec.describe Session, type: :model do
       expect(session.participants.reload).to include(ta)
     end
 
+    it "lets a non-host instructor join with the correct code" do
+      expect(session.join(instructor, "1234")).to eq(:ok)
+      expect(session.participants.reload).to include(instructor)
+    end
+
     it "rejects a wrong code" do
       expect(session.join(student, "9999")).to eq(:invalid_code)
       expect(session.participants.reload).not_to include(student)
@@ -148,6 +158,16 @@ RSpec.describe Session, type: :model do
       session.join(student, "1234")
 
       expect(session.participants.reload.where(id: student.id).count).to eq(1)
+
+      session.join(ta, "1234")
+      session.join(ta, "1234")
+
+      expect(session.participants.reload.where(id: ta.id).count).to eq(1)
+
+      session.join(instructor, "1234")
+      session.join(instructor, "1234")
+
+      expect(session.participants.reload.where(id: instructor.id).count).to eq(1)
     end
   end
 
@@ -173,6 +193,15 @@ RSpec.describe Session, type: :model do
     it "is idempotent when already ended" do
       session.end
       expect { session.end }.not_to change { session.reload.updated_at }
+    end
+
+    it "only marks students in participant count" do
+      session.join(student, "7777")
+      session.join(ta, "7777")
+      session.join(instructor, "7777")
+      result = session.end
+
+      expect(result["participant_count"]).to eq(1)
     end
   end
 
@@ -200,7 +229,15 @@ RSpec.describe Session, type: :model do
     end
 
     it "rejects feedback to a non-participant" do
-      expect(session.send_live_feedback(ta, "Nope")).to eq(:not_participant)
+      student2 = User.find_by(email: "james.session@tamu.edu") || create_user!(name: "James Student", email: "james.session@tamu.edu", role: "student")
+      expect(session.send_live_feedback(student2, "Nope")).to eq(:not_participant)
+    end
+
+    it "rejects feedback to a non-student" do
+      session.join(ta, "8888")
+      session.join(instructor, "8888")
+      expect(session.send_live_feedback(ta, "Nope")).to eq(:not_recipient)
+      expect(session.send_live_feedback(instructor, "Nope")).to eq(:not_recipient)
     end
 
     it "rejects feedback after the session has ended" do
@@ -368,6 +405,16 @@ RSpec.describe Session, type: :model do
       choice = Choice.create!(body: "10", correct: true, question: question)
 
       expect(session.submit_response(ta, question, choice)).to eq(:not_participant)
+    end
+
+    it "rejects submission from a non-student" do
+      session.join(ta, "0003")
+      session.join(instructor, "0003")
+      question = Question.create!(body: "What is 5+5?", number: 5, question_set: question_set)
+      choice = Choice.create!(body: "10", correct: true, question: question)
+
+      expect(session.submit_response(ta, question, choice)).to eq(:not_student)
+      expect(session.submit_response(instructor, question, choice)).to eq(:not_student)
     end
 
     it "rejects submission for an invalid question" do
