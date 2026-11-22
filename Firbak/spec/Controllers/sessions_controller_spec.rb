@@ -30,7 +30,7 @@ RSpec.describe SessionsController, type: :controller do
         id: 2000,
         number: 1,
         body: "What is 2 + 2?",
-        choices: [1, 2],
+        
         question_set_id: 1000
       )
     end
@@ -38,6 +38,7 @@ RSpec.describe SessionsController, type: :controller do
       Choice.create(
         id: 1,
         body: "4",
+        correct: true,
         question_id: 2000
       )
     end
@@ -45,6 +46,7 @@ RSpec.describe SessionsController, type: :controller do
       Choice.create(
         id: 2,
         body: "5",
+        correct: false,
         question_id: 2000
       )
     end
@@ -73,8 +75,9 @@ RSpec.describe SessionsController, type: :controller do
     end
 
     it 'does not allow a user to join a session with an invalid code' do
-      # whoever wrote these should implement them
-      expect(response).to have_http_status(:not_found)
+      session[:user_id] = 500
+      post :join, params: { session_code: "WRONG1" }
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

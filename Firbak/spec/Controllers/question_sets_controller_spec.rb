@@ -83,7 +83,7 @@ RSpec.describe QuestionSetsController, type: :controller do
         end
     end
 
-    describe 'Question Set/Question/Choice model validations and associations' do
+    describe 'Question Set/Question/Choice model validations and associations' , skip: "Model checks are covered in spec/Models; needs rewriting as controller tests (#4)" do
         it 'questions belong to questions sets' do
             expect(Question[id=1000].question_set_id).to eq(1000)
         end

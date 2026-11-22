@@ -1,6 +1,7 @@
 class QuestionSetsController < ApplicationController
   before_action :require_login
   before_action :set_question_set, only: [:edit, :update, :launch_session]
+  before_action :require_owner, only: [:edit, :update]
 
   def index
     @question_sets = if current_user.can_manage_sets?
@@ -41,4 +42,16 @@ class QuestionSetsController < ApplicationController
   def set_question_set
     @question_set = QuestionSet.find(params[:id])
   end
+
+  # Only the instructor who owns a set may edit it.
+  def require_owner
+    return if @question_set.owner == current_user
+
+    redirect_to question_sets_path, alert: "You are not authorized to do that"
+  end
+
+  def question_set_params
+    params.require(:question_set).permit(:title)
+  end
 end
+

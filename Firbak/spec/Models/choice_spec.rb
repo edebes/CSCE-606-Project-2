@@ -4,8 +4,13 @@ require 'rails_helper'
 
 RSpec.describe Choice, type: :model do
   before(:all) do
+    owner = User.find_or_create_by!(email: "choice.owner@tamu.edu") do |u|
+      u.name = "Choice Owner"
+      u.role = "instructor"
+    end
+    set = QuestionSet.find_or_create_by!(title: "Choice Spec Set", owner: owner)
     question = Question.find_by(body: '2 x 3 = ?', number: 1)
-    question ||= Question.create(body: '2 x 3 = ?', number: 1)
+    question ||= Question.create!(body: '2 x 3 = ?', number: 1, question_set: set)
 
     if described_class.where(body: '6').empty?
       described_class.create(body: '6', correct: true, question: question)
