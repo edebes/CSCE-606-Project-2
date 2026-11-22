@@ -1,86 +1,124 @@
-<h1>Live session</h1>
+<% content_for :title, "Live session · Firbak" %>
 
-<p>
-  Question set: <strong><%= @session.question_set.title %></strong>
-</p>
+<main class="page">
+  <div class="session-card">
+    <div class="panel-head">
+      <div>
+        <h1>Live session</h1>
+        <p class="lede"><%= @session.question_set.title %></p>
+      </div>
+      <div class="meta-row meta-row-flush">
+        <span class="pill <%= @session.active? ? "live" : "warn" %>"><%= @session.active? ? "Live" : @session.status %></span>
+        <span class="pill muted">Code <%= @session.code %></span>
+      </div>
+    </div>
 
-<p>
-  Join code: <strong><%= @session.code %></strong>
-</p>
+    <% if @host_view %>
+      <% if @session.active? %>
+        <div class="join-code-hero">
+          <span class="label">Students join with</span>
+          <div class="code-row">
+            <span class="code"><%= @session.code %></span>
+          </div>
+        </div>
 
-<p>Status: <%= @session.status %></p>
-
-<% if @host_view %>
-  <% if @session.active? %>
-    <table class="table table-striped col-md-12" id="participants">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Current Question</th>
-          <th>Struggling</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @session.participants.each do |participant| %>
-          <tr>
-            <td>
-              <%= participant.name %>
-            </td>
-            <td>
-              <% q = @session.current_question_for(participant) %>
-              <%= q ? "Question #{q.number}" : "Completed" %>
-            </td>
-            <td>
-              <%= participant.struggling?(@session) ? "Yes" : "No" %>
-            </td>
-          </tr>
+        <% if @session.participants.any? %>
+          <div class="table-wrap">
+            <table id="participants">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Current question</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @session.participants.each do |participant| %>
+                  <tr>
+                    <td><strong><%= participant.name %></strong></td>
+                    <td>
+                      <% q = @session.current_question_for(participant) %>
+                      <%= q ? "Question #{q.number}" : "Completed" %>
+                    </td>
+                    <td>
+                      <% if participant.struggling?(@session) %>
+                        <span class="struggle-yes">Needs help</span>
+                      <% else %>
+                        <span class="struggle-no">On track</span>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="empty-state">
+            <p>Waiting for students to join with code <strong><%= @session.code %></strong>.</p>
+          </div>
         <% end %>
-      </tbody>
-    </table>
-    <p>
-      <%= button_to "Refresh", session_path(@session), method: :get, class: "btn btn-primary" %>
-    </p>
-    <p>
-      <%= button_to "End session", end_session_path(@session), method: :post, class: "btn btn-danger" %>
-    </p>
-    <p>
-      <%= button_to "Leave session", leave_session_path(@session), method: :post, class: "btn btn-danger" %>
-    </p>
-  <% else %>
-    <p>Session has ended.</p>
-    <p><%= link_to "View session summary", summary_session_path(@session) %></p>
-  <% end %>
-<% else %>
-  <% if @latest_response %>
-    <% if @latest_response.correct %>
-      <p class="result correct">Correct! (Question <%= @latest_response.question.number %>)</p>
-    <% elsif @current_question && @latest_response.question_id == @current_question.id %>
-      <p class="result incorrect">Not quite.</p>
-      <% if @latest_response.feedback %>
-        <p class="choice-feedback"><%= @latest_response.feedback %></p>
+
+        <div class="actions">
+          <%= button_to "Refresh", session_path(@session), method: :get, class: "btn-secondary" %>
+          <%= button_to "End session", end_session_path(@session), method: :post, class: "btn-danger" %>
+          <%= button_to "Leave session", leave_session_path(@session), method: :post, class: "btn-ghost" %>
+        </div>
+      <% else %>
+        <p>Session has ended.</p>
+        <div class="actions">
+          <%= link_to "View session summary", summary_session_path(@session), class: "btn" %>
+        </div>
+      <% end %>
+    <% else %>
+      <% if @latest_response %>
+        <% if @latest_response.correct %>
+          <p class="result correct">Correct! (Question <%= @latest_response.question.number %>)</p>
+        <% elsif @current_question && @latest_response.question_id == @current_question.id %>
+          <p class="result incorrect">Not quite.</p>
+          <% if @latest_response.feedback %>
+            <p class="choice-feedback"><%= @latest_response.feedback %></p>
+          <% end %>
+        <% end %>
+      <% end %>
+
+      <% if @session.ended? %>
+        <div class="empty-state">
+          <p>Session has ended.</p>
+        </div>
+      <% elsif @current_question.nil? %>
+        <div class="empty-state">
+          <p>You have completed all questions in this session.</p>
+        </div>
+      <% else %>
+        <div class="student-answer-ui">
+          <p class="muted">Question <%= @current_question.number %> of <%= @session.ordered_questions.count %></p>
+          <p class="question-body"><%= @current_question.body %></p>
+
+          <%= form_with url: session_responses_path(@session), method: :post, local: true do |form| %>
+            <div class="choice-list">
+              <% @current_question.choices.each do |choice| %>
+                <label>
+                  <%= radio_button_tag :choice_id, choice.id, false, required: true %>
+                  <span><%= choice.body %></span>
+                </label>
+              <% end %>
+            </div>
+            <div class="student-submit-bar">
+              <%= form.submit "Submit answer", class: "btn-block" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% unless @session.ended? %>
+        <div class="actions">
+          <%= button_to "Leave session", leave_session_path(@session), method: :post, class: "btn-ghost" %>
+        </div>
       <% end %>
     <% end %>
-  <% end %>
 
-  <% if @session.ended? %>
-    <p>Session has ended.</p>
-  <% elsif @current_question.nil? %>
-    <p>You have completed all questions in this session.</p>
-  <% else %>
-    <p>Question <%= @current_question.number %> of <%= @session.ordered_questions.count %></p>
-    <p><strong><%= @current_question.body %></strong></p>
-    <%= form_with url: session_responses_path(@session), method: :post do |form| %>
-      <% @current_question.choices.each do |choice| %>
-        <label><%= radio_button_tag :choice_id, choice.id, false, required: true %> <%= choice.body %></label>
-      <% end %>
-      <%= form.submit "Submit" %>
-    <% end %>
-  <% end %>
-  <% unless @session.ended? %>
-    <p>
-      <%= button_to "Leave session", leave_session_path(@session), method: :post, class: "btn btn-danger" %>
-    </p>
-  <% end %>
-<% end %>
-
-<%= link_to "Back to question sets", question_sets_path %>
+    <div class="footer-link">
+      <%= link_to "← Back to question sets", question_sets_path %>
+    </div>
+  </div>
+</main>

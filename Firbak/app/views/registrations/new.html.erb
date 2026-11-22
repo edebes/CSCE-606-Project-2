@@ -1,42 +1,60 @@
-<% content_for :title, "Sign up | Firbak" %>
+<% content_for :title, "Sign up · Firbak" %>
 
-<h1>Create a student account</h1>
+<div class="auth-shell">
+  <div class="auth-stage">
+    <aside class="auth-brand">
+      <div>
+        <span class="auth-brand-kicker">Firbak</span>
+        <p class="auth-brand-title">Create your student account.</p>
+        <p>Join live sessions, get instant feedback, and practice with your class.</p>
+      </div>
+      <div class="auth-brand-footer">Takes less than a minute</div>
+    </aside>
 
-<% if @user.errors.any? %>
-  <div id="error_explanation" role="alert">
-    <h2><%= pluralize(@user.errors.count, "problem") %> with your sign-up:</h2>
-    <ul>
-      <% @user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+    <div class="auth-card">
+      <h1>Sign up</h1>
+      <p class="lede">Student accounts can join sessions with a code.</p>
+
+      <% if @user.errors.any? %>
+        <div class="form-errors" role="alert">
+          <p><%= pluralize(@user.errors.count, "problem") %> with your sign-up:</p>
+          <ul>
+            <% @user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
       <% end %>
-    </ul>
+
+      <%= form_with model: @user, url: signup_path, method: :post, local: true, class: "stack" do |f| %>
+        <div>
+          <%= f.label :name, "Name" %>
+          <%= f.text_field :name, autocomplete: "name", required: true, placeholder: "Your name" %>
+        </div>
+
+        <div>
+          <%= f.label :email, "Email" %>
+          <%= f.email_field :email, autocomplete: "email", required: true, placeholder: "you@tamu.edu" %>
+        </div>
+
+        <div>
+          <%= f.label :password, "Password" %>
+          <%= f.password_field :password, autocomplete: "new-password", required: true,
+                               aria: { describedby: "password_hint" } %>
+          <p id="password_hint" class="field-hint">At least 8 characters.</p>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, "Confirm password" %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true %>
+        </div>
+
+        <%= f.submit "Create account", class: "btn-block" %>
+      <% end %>
+
+      <p class="muted auth-footer-note">
+        Already have an account? <%= link_to "Log in", login_path %>
+      </p>
+    </div>
   </div>
-<% end %>
-
-<%= form_with model: @user, url: signup_path, method: :post do |f| %>
-  <div>
-    <%= f.label :name, "Name" %>
-    <%= f.text_field :name, autocomplete: "name", required: true %>
-  </div>
-
-  <div>
-    <%= f.label :email, "Email" %>
-    <%= f.email_field :email, autocomplete: "email", required: true %>
-  </div>
-
-  <div>
-    <%= f.label :password, "Password" %>
-    <%= f.password_field :password, autocomplete: "new-password", required: true,
-                         aria: { describedby: "password_hint" } %>
-    <small id="password_hint">At least 8 characters.</small>
-  </div>
-
-  <div>
-    <%= f.label :password_confirmation, "Confirm password" %>
-    <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true %>
-  </div>
-
-  <%= f.submit "Create account" %>
-<% end %>
-
-<p>Already have an account? <%= link_to "Log in", login_path %></p>
+</div>
