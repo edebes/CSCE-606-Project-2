@@ -9,7 +9,7 @@ RSpec.describe Question, type: :model do
     end
     set = QuestionSet.find_or_create_by!(title: "Spec Set", owner: owner)
     question = described_class.find_by(body: '2 x 3 = ?')
-    question ||= described_class.create(body: '2 x 3 = ?', number: 1)
+    question ||= described_class.create(body: '2 x 3 = ?', number: 1, question_set: set)
 
     if Choice.where(body: '6', question: question).empty?
       Choice.create(body: '6', question: question, correct: true)
@@ -22,7 +22,7 @@ RSpec.describe Question, type: :model do
 
   describe 'validations' do
     it 'is valid with valid attributes' do
-      question = described_class.new(body: '10 + 5 = ?', number: 2)
+      question = described_class.new(body: '10 + 5 = ?', number: 2, question_set: QuestionSet.find_by!(title: "Spec Set"))
 
       expect(question).to be_valid
     end
@@ -96,7 +96,7 @@ RSpec.describe Question, type: :model do
 
     it 'does not return choices not associated with the question' do
       question = described_class.find_by(body: '2 x 3 = ?')
-      other_question = described_class.create(body: '9 + 1 = ?', number: 100)
+      other_question = described_class.create(body: '9 + 1 = ?', number: 100, question_set: QuestionSet.find_by!(title: "Spec Set"))
       other_choice = other_question.choices.create(body: '10', correct: true)
 
       expect(question.choices).not_to include(other_choice)
@@ -119,7 +119,7 @@ RSpec.describe Question, type: :model do
     end
 
     it 'returns nothing if question has no correct choices' do
-      question = described_class.create(body: '8 + 2 = ?', number: 101)
+      question = described_class.create(body: '8 + 2 = ?', number: 101, question_set: QuestionSet.find_by!(title: "Spec Set"))
       question.choices.create(body: '11', correct: false)
 
       expect(question.correct_choice).to be_nil
