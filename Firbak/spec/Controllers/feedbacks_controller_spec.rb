@@ -27,7 +27,7 @@ RSpec.describe FeedbacksController, type: :controller do
       get :new, params: {
         session_id: live_session.id,
         question: question.number,
-        to: student.user_id
+        to: student.id
       }
 
       expect(response).to have_http_status(:ok)
@@ -37,9 +37,9 @@ RSpec.describe FeedbacksController, type: :controller do
 
     it "assigns the correct question based on question number" do
       get :new, params: {
-        session_id: live_session_id,
+        session_id: live_session.id,
         question: question.number,
-        to: student.user_id
+        to: student.id
       }
 
       expect(assigns(:question)).to eq(question)
@@ -51,7 +51,7 @@ RSpec.describe FeedbacksController, type: :controller do
       {
         session_id: live_session.id,
         question: question.number,
-        to: student.user_id,
+        to: student.id,
         feedback: { content: "Try again" }
       }
     end
@@ -98,11 +98,10 @@ RSpec.describe FeedbacksController, type: :controller do
   private
 
   def create_user(role:, name:)
-    user_id = User.maximum(:user_id).to_i + 1
+    free_id = User.maximum(:id).to_i + 1
     User.create!(
-      user_id: user_id,
       name: name,
-      email: "feedback-#{user_id}@example.com",
+      email: "feedback-#{free_id}@example.com",
       role: role
     )
   end

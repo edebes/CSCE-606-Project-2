@@ -45,7 +45,7 @@ class FeedbacksController < ApplicationController
   end
 
   def set_recipient
-    @recipient = User.find_by!(user_id: params[:to])
+    @recipient = User.find(params[:to])
   end
 
   def authorize_feedback_sender!

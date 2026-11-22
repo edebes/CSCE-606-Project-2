@@ -35,10 +35,10 @@
                   <td><%= latest_response.choice.body %></td>
                   <td>
                     <%= link_to "Send Feedback",
-                                new_session_feedback_path(
+                                send_feedback_session_path(
                                   @session,
                                   question: question.number,
-                                  to: student.user_id
+                                  to: student.id
                                 ),
                                 class: "btn btn-primary" %>
                   </td>

@@ -1,7 +1,7 @@
 <%= form_with model: feedback,
               url: send_feedback_session_path(
                 @session,
-                to: @recipient.user_id,
+                to: @recipient.id,
                 question: @question.number
               ),
               method: :post do |form| %>
