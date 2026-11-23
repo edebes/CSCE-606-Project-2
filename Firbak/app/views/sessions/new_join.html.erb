@@ -1,9 +1,26 @@
-<h1>Join a session</h1>
+<% content_for :title, "Join session · Firbak" %>
 
-<%= form_with url: join_session_path, method: :post, local: true do %>
-  <div>
-    <%= label_tag :session_code, "Session code" %>
-    <%= text_field_tag :session_code, params[:session_code] %>
+<main class="page join-shell">
+  <div class="session-card join-card">
+    <h1>Join a session</h1>
+    <p class="lede">Enter the 4-digit code from your instructor.</p>
+
+    <%= form_with url: join_session_path, method: :post, local: true, class: "stack" do %>
+      <div>
+        <%= label_tag :session_code, "Session code" %>
+        <%= text_field_tag :session_code, params[:session_code],
+              class: "code-input",
+              inputmode: "numeric",
+              maxlength: 4,
+              autocomplete: "off",
+              required: true,
+              placeholder: "1234" %>
+      </div>
+      <%= submit_tag "Join session", class: "btn-block" %>
+    <% end %>
+
+    <div class="footer-link">
+      <%= link_to "← Back to question sets", question_sets_path %>
+    </div>
   </div>
-  <%= submit_tag "Join" %>
-<% end %>
+</main>
