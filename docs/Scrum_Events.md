@@ -172,3 +172,16 @@ Summary:
 - Alex similar
 - Eric almost done with TA view user story
 - scrum on Monday 11/23 at normal class time
+
+### Scrum Meeting 11/23
+Attendees: Alex Gonce, Gokulan Valavan, Jaelen Dixon, Yashas Suresh, Eric Debes
+
+Summary: 
+- Jaelen updated his PR, reviewed with edits, needs review again but should be good
+- Started working on next task, hopefully done later today
+- Gokulan worked on student registration, cleaned up rspec tests, cucumber more difficult to update
+- Yashas worked on UI, will need to keep working on it as pages are added
+- Eric pushed PR for TA view, wants to work with Jaelen on ta view/feedback implementations
+- Alex still working on current tasks, hope to get PR by tuesday evening
+- discussed how are we still implementing course view
+  - Add user story: As a professor, so that I can see the progress of my class over time, I want to have a page that includes the summaries of past sessions for each question set. (3 points)
