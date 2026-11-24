@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   before(:all) do
-    user_student = described_class.find_by(email: ' john.doe@tamu.edu')
+    user_student = described_class.find_by(email: 'john.doe@tamu.edu')
     user_student ||= described_class.create(name: 'John Doe', email: 'john.doe@tamu.edu', role: 'student')
 
     user_instructor = described_class.find_by(email: 'anne.smith@tamu.edu')
@@ -39,7 +39,7 @@ RSpec.describe User, type: :model do
 
   describe 'role?' do
     it 'returns the role of the user' do
-      user = described_class.find_by(email: ' john.doe@tamu.edu')
+      user = described_class.find_by(email: 'john.doe@tamu.edu')
       expect(user.role?).to eq('student')
     end
 
@@ -56,7 +56,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'returns false for a student' do
-      user = described_class.find_by(email: ' john.doe@tamu.edu')
+      user = described_class.find_by(email: 'john.doe@tamu.edu')
       expect(user.can_manage_sets?).to be false
     end
 
@@ -83,7 +83,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'returns false for a student' do
-      user = described_class.find_by(email: ' john.doe@tamu.edu')
+      user = described_class.find_by(email: 'john.doe@tamu.edu')
       expect(user.can_give_live_feedback?).to be false
     end
 
@@ -102,21 +102,21 @@ RSpec.describe User, type: :model do
     let(:session) { Session.find_by(host_id: instructor.id, question_set_id: question_set.id) || Session.create(host_id: instructor.id, question_set_id: question_set.id, code: '1000', status: 'active') }
 
     it 'returns true if the user is struggling with the current question' do
-      user = described_class.find_by(email: ' john.doe@tamu.edu')
+      user = described_class.find_by(email: 'john.doe@tamu.edu')
       session.join(user, "1000")
       Response.create!(session: session, user: user, question: question, choice: choice2)
       expect(user.struggling?(session)).to be true
     end
 
     it 'returns false if the user is not struggling with the current question' do
-      user = described_class.find_by(email: ' john.doe@tamu.edu')
+      user = described_class.find_by(email: 'john.doe@tamu.edu')
       session.join(user, "1000")
       Response.create!(session: session, user: user, question: question, choice: choice1)
       expect(user.struggling?(session)).to be false
     end
 
     it 'returns false if the session has ended' do
-      user = described_class.find_by(email: ' john.doe@tamu.edu')
+      user = described_class.find_by(email: 'john.doe@tamu.edu')
       session2 = Session.create(host_id: instructor.id, question_set_id: question_set.id, code: '1001', status: 'active')
       session.join(user, "1001")
       Response.create!(session: session, user: user, question: question, choice: choice2)
@@ -125,7 +125,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'returns false if there are no responses for the current question' do
-      user = described_class.find_by(email: ' john.doe@tamu.edu')
+      user = described_class.find_by(email: 'john.doe@tamu.edu')
       session.join(user, 1000)
       expect(user.struggling?(session)).to be false
     end

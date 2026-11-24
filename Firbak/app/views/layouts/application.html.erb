@@ -14,7 +14,9 @@
       <% if logged_in? %>
         <span><%= current_user.name %> (<%= current_user.role %>)</span>
         <%= link_to "Join session", join_session_path %>
-        <%= link_to "Question sets", question_sets_path %>
+        <% if current_user.can_manage_sets? %>
+          <%= link_to "Question sets", question_sets_path %>
+        <% end %>
         <%= button_to "Log out", logout_path, method: :post %>
       <% else %>
         <%= link_to "Log in", login_path %>

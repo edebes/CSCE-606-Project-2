@@ -6,7 +6,11 @@ class LoginsController < ApplicationController
     user = User.find_by(email: params[:email].to_s.strip)
     if user&.authenticate(params[:password].to_s)
       session[:user_id] = user.id
-      redirect_to question_sets_path, notice: "Logged in"
+      if user.can_manage_sets?
+        redirect_to question_sets_path, notice: "Logged in"
+      else
+        redirect_to join_session_path, notice: "Logged in"
+      end
     else
       flash.now[:alert] = "Invalid email or password"
       render :new, status: :unprocessable_entity

@@ -3,7 +3,7 @@ class SessionsController < ApplicationController
 
   def show
     @session = Session.find(params[:id])
-    if @session.host_id == current_user.id
+    if @session.host_id == current_user.id || (@session.participants.include?(current_user) && current_user.can_give_live_feedback?)
       @host_view = true
     elsif @session.participants.include?(current_user)
       @current_question = @session.current_question_for(current_user) unless @session.ended?
@@ -46,12 +46,12 @@ class SessionsController < ApplicationController
   def end_session
     @session = Session.find(params[:id])
     if @session.host_id != current_user.id
-      redirect_to root_path, alert: "You are not authorized to do that."
+      redirect_to join_session_path, alert: "You are not authorized to do that."
       return
     end
 
     if @session.ended?
-      redirect_to summary_session_path(@session), notice: "Session has already ended."
+      redirect_to summary_session_path(@session), notice: "Session has already ended"
       return
     end
     @session.end
@@ -62,7 +62,7 @@ class SessionsController < ApplicationController
   def summary
     @session = Session.find(params[:id])
     if @session.host_id != current_user.id
-      fallback = @session.participants.include?(current_user) ? session_path(@session) : root_path
+      fallback = @session.participants.include?(current_user) ? session_path(@session) : join_session_path
       redirect_to fallback, alert: "You are not authorized to do that."
       return
     end
@@ -89,7 +89,7 @@ class SessionsController < ApplicationController
   def require_host
     @session = Session.find(params[:id])
     unless @session.host_id == current_user.id
-      redirect_to root_path, alert: "You are not authorized to perform this action."
+      redirect_to join_session_path, alert: "You are not authorized to perform this action."
     end
   end
 end

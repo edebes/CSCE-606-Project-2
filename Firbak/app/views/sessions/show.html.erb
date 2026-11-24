@@ -21,7 +21,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @session.participants.each do |participant| %>
+        <% @session.participants.where(role: "student").each do |participant| %>
           <tr>
             <td>
               <%= participant.name %>
@@ -40,15 +40,20 @@
     <p>
       <%= button_to "Refresh", session_path(@session), method: :get, class: "btn btn-primary" %>
     </p>
-    <p>
-      <%= button_to "End session", end_session_path(@session), method: :post, class: "btn btn-danger" %>
-    </p>
-    <p>
-      <%= button_to "Leave session", leave_session_path(@session), method: :post, class: "btn btn-danger" %>
-    </p>
+    <% if @session.host_id == current_user.id %>
+      <p>
+        <%= button_to "End session", end_session_path(@session), method: :post, class: "btn btn-danger" %>
+      </p>
+    <% else %>
+      <p>
+        <%= button_to "Leave session", leave_session_path(@session), method: :post, class: "btn btn-danger" %>
+      </p>
+    <% end %>
   <% else %>
     <p>Session has ended.</p>
-    <p><%= link_to "View session summary", summary_session_path(@session) %></p>
+    <% if @session.host_id == current_user.id %>
+      <p><%= link_to "View session summary", summary_session_path(@session) %></p>
+    <% end %>
   <% end %>
 <% else %>
   <% if @latest_response %>
@@ -82,5 +87,3 @@
     </p>
   <% end %>
 <% end %>
-
-<%= link_to "Back to question sets", question_sets_path %>
