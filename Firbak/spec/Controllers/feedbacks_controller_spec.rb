@@ -1,58 +1,108 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe FeedbacksController, type: :controller do
-    before(:each) do
-        if User.where(id: 500).empty?
-            User.create(
-                id: 500,
-                name: "John",
-                email: "john@gmail.com",
-                role: "student",
-                )
-        end
-        if Question.where(id: 1000).empty?
-            Question.create(
-                id: 1000,
-                number: 1,
-                body: "What is 2 + 2?",
-                choices: [1, 2, 3, 4],
-                question_set_id: 2000,
-            )
-        end
-        if Choice.where(id: 2).empty?
-            Choice.create(
-                id: 2,
-                body: "3",
-                is_correct: false,
-                feedback: 1900,
-            )
-        end
-        if Feedback.where(id: 1900).empty?
-            Feedback.create(
-                id: 1900,
-                to_user_id: 500,
-                session_id: 1000,
-                question_id: 1000,
-                context: "Try again",
-                delivered: "2024-06-01 00:00:00",
-            )
-        end
+  render_views
+
+  let(:instructor) { create_user(role: "instructor", name: "Anne") }
+  let(:student) { create_user(role: "student", name: "John") }
+  let(:question_set) { QuestionSet.create!(title: "Math", owner: instructor) }
+  let(:question) do
+    Question.create!(number: 1, body: "What is 2 + 2?", question_set: question_set)
+  end
+  let(:live_session) do
+    Session.create!(
+      question_set: question_set,
+      host: instructor,
+      code: Session.generate_unique_code,
+      status: "active"
+    )
+  end
+
+  before do
+    session[:user_id] = instructor.id
+  end
+
+  describe "GET #new" do
+    it "renders the feedback form for the selected student and question" do
+      get :new, params: {
+        session_id: live_session.id,
+        question: question.number,
+        to: student.id
+      }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Send Feedback to John")
+      expect(response.body).to include("Feedback for Question 1")
     end
 
-    describe 'when receiving feedback on an incorrect choice' do
-        it 'delivers feedback to the user' do
-            # enter in more logic about sending user choice and receiving feedback
-            expect(response).to have_http_status(:success)
-        end
+    it "assigns the correct question based on question number" do
+      get :new, params: {
+        session_id: live_session.id,
+        question: question.number,
+        to: student.id
+      }
 
-        it 'does not deliver feedback to the user if the choice is correct' do
-            # enter in more logic about sending user choice and receiving feedback
-            expect(response).to have_http_status(:unprocessable_entity)
-        end
-
-        it 'does not deliver feedback to the user if the choice does not exist' do
-            # enter in more logic about sending user choice and receiving feedback
-            expect(response).to have_http_status(:not_found)
-        end
+      expect(assigns(:question)).to eq(question)
     end
+  end
+
+  describe "POST #send_feedback" do
+    let(:feedback_params) do
+      {
+        session_id: live_session.id,
+        question: question.number,
+        to: student.id,
+        feedback: { content: "Try again" }
+      }
+    end
+
+    it "creates feedback for the selected student and question" do
+      expect do
+        post :send_feedback, params: feedback_params
+      end.to change(Feedback, :count).by(1)
+
+      feedback = Feedback.order(:id).last
+      expect(feedback).to have_attributes(
+        session_id: live_session.id,
+        to_user_id: student.id,
+        from_user_id: instructor.id,
+        question_id: question.id,
+        content: "Try again"
+      )
+      expect(response).to redirect_to(session_path(live_session))
+    end
+
+    it "does not create feedback when the sender is not authorized" do
+      session[:user_id] = student.id
+
+      expect do
+        post :send_feedback, params: feedback_params
+      end.not_to change(Feedback, :count)
+
+      expect(response).to redirect_to(session_path(live_session))
+      expect(flash[:alert]).to eq("You are not authorized to send feedback")
+    end
+
+    it "does not create feedback after the session has ended" do
+      live_session.update!(status: "ended")
+
+      expect do
+        post :send_feedback, params: feedback_params
+      end.not_to change(Feedback, :count)
+
+      expect(response).to redirect_to(session_path(live_session))
+      expect(flash[:alert]).to eq("Session has ended")
+    end
+  end
+
+  private
+
+  def create_user(role:, name:)
+    free_id = User.maximum(:id).to_i + 1
+    User.create!(
+      name: name,
+      email: "feedback-#{free_id}@example.com",
+      role: role
+    )
+  end
 end

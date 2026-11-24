@@ -1,0 +1,11 @@
+<% content_for :title, "Feedback" %>
+
+<h1 class="feedback-form-header">Send Feedback to <%= @recipient.name.to_s %></h1>
+
+<%= render "form", feedback: @feedback, question_number: @question %>
+
+<br>
+
+<div>
+  <%= link_to "Back to session", session_path(@session) %>
+</div>
